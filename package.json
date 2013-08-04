@@ -1,0 +1,28 @@
+{
+  "name": "atomify-js",
+  "version": "0.0.1",
+  "description": "Atomify your js - use js and handlebars templates from node modules on the front end.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Techwraith/atomify-css.git"
+  },
+  "keywords": [
+    "js",
+    "browserify",
+    "atomify",
+    "npm",
+    "atomic"
+  ],
+  "author": "techwraith",
+  "license": "MIT",
+  "dependencies": {
+    "browserify": "~2.26.0",
+    "brfs": "0.0.6",
+    "handlebars-runtime": "~1.0.12",
+    "hbsfy": "~0.1.5"
+  }
+}
