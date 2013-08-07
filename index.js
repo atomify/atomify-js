@@ -1,4 +1,5 @@
 var browserify = require('browserify')
+  , shim       = require('browserify-shim')
   , hbsfy      = require('hbsfy')
   , brfs       = require('brfs')
 
