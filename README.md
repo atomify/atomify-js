@@ -23,6 +23,9 @@ var js = require('atomify-js')
 
 var opts = {
   entry: './entry.js'
+, shim: {
+    jquery: { path: './jquery.js', exports: '$' }
+  }
 , debug: true // default: `false`
 }
 

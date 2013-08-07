@@ -3,7 +3,8 @@ var browserify = require('browserify')
   , brfs       = require('brfs')
 
 module.exports = function (opts, cb) {
-  var bundle = browserify([opts.entry])
+  if (!opts.shim) opts.shim = {}
+  var bundle = shim(browserify([opts.entry]), opts.shim)
   bundle.transform(hbsfy)
   bundle.transform(brfs)
   bundle.bundle({debug: opts.debug || false}, cb)

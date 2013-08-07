@@ -1,6 +1,6 @@
 {
   "name": "atomify-js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Atomify your js - use js and handlebars templates from node modules on the front end.",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,8 @@
   "author": "techwraith",
   "license": "MIT",
   "dependencies": {
-    "browserify": "~2.26.0"
+    "browserify": "~2.26.0",
+    "browserify-shim": "~2.0.8"
   },
   "peerDependencies": {
     "brfs": "0.0.6",
