@@ -1,6 +1,6 @@
 {
   "name": "atomify-js",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Atomify your js - use js and handlebars templates from node modules on the front end.",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Techwraith/atomify-css.git"
+    "url": "https://github.com/Techwraith/atomify-js.git"
   },
   "keywords": [
     "js",
