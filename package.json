@@ -26,6 +26,7 @@
   "peerDependencies": {
     "brfs": "~0.0.8",
     "handlebars-runtime": "~1.0.12",
-    "hbsfy": "~1.0.0"
+    "hbsfy": "~1.0.0",
+    "envify": "~1.0.1"
   }
 }
