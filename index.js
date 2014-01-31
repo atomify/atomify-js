@@ -7,7 +7,9 @@ var browserify = require('browserify')
   , brfs       = require('brfs')
 
 module.exports = function (opts, cb) {
-  if (!opts.shim) opts.shim = {}
+  opts = opts || {}
+  opts.shim = opts.shim || {}
+  opts.debug = opts.debug || false
   var bundle = shim(browserify(), opts.shim)
 
   bundle.require(require.resolve(opts.entry), {entry: true})
@@ -18,5 +20,5 @@ module.exports = function (opts, cb) {
     bundle.transform(transform)
   })
 
-  bundle.bundle({debug: opts.debug || false}, cb)
+  bundle.bundle(opts, cb)
 }

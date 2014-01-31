@@ -12,6 +12,7 @@ You want to use node modules with handlebars tempaltes and inlined fs calls on t
 atomify-js takes an `opts` object and a `callback`.
 
 The `opts` object must contain an `entry` key that is the path to the entry file for atomify.
+You can pass any [browserify bundle options](https://github.com/substack/node-browserify#bbundleopts-cb) into the `opts` object as well.
 
 The `callback` will be called with an (optional) `error` as it's first argument and atomified `source`.
 
