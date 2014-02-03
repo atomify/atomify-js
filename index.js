@@ -7,6 +7,7 @@ var browserify = require('browserify')
   , brfs       = require('brfs')
 
 module.exports = function (opts, cb) {
+  if (typeof opts === 'string') opts = {entry: opts};
   opts = opts || {}
   opts.shim = opts.shim || {}
   opts.debug = opts.debug || false
