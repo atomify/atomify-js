@@ -1,4 +1,5 @@
 var browserify = require('browserify')
+  , watchify   = require('watchify')
   , shim       = require('browserify-shim')
   , ejsify     = require('ejsify')
   , hbsfy      = require('hbsfy')
@@ -11,7 +12,13 @@ module.exports = function (opts, cb) {
   opts = opts || {}
   opts.shim = opts.shim || {}
   opts.debug = opts.debug || false
-  var bundle = shim(browserify(), opts.shim)
+  var bundle = shim(opts.watch ? watchify() : browserify(), opts.shim)
+
+  if (opts.watch) {
+    bundle.on('update', function () {
+      bundle.bundle(opts, cb)
+    })
+  }
 
   bundle.require(require.resolve(opts.entry), {entry: true})
 
