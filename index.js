@@ -5,6 +5,7 @@ var browserify = require('browserify')
   , hbsfy      = require('hbsfy')
   , jadeify    = require('jadeify')
   , envify     = require('envify')
+  , partialify = require('partialify')
   , brfs       = require('brfs')
 
 module.exports = function (opts, cb) {
@@ -23,7 +24,7 @@ module.exports = function (opts, cb) {
   bundle.require(require.resolve(opts.entry), {entry: true})
 
   // ensure brfs runs last because it requires valid js
-  opts.transforms = [envify, ejsify, hbsfy, jadeify].concat(opts.transforms || []).concat(brfs)
+  opts.transforms = [envify, ejsify, hbsfy, jadeify, partialify].concat(opts.transforms || []).concat(brfs)
   opts.transforms.forEach(function (transform) {
     bundle.transform(transform)
   })
