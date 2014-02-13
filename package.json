@@ -27,6 +27,7 @@
     "jadeify": "~2.1.1",
     "ejsify": "~0.0.2",
     "envify": "~1.0.1",
-    "watchify": "~0.6.1"
+    "watchify": "~0.6.1",
+    "partialify": "~2.1.0"
   }
 }
