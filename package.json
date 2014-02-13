@@ -1,6 +1,6 @@
 {
   "name": "atomify-js",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Atomify your js - use js and Handlebars, EJS or Jade templates from node modules on the front end.",
   "main": "index.js",
   "scripts": {
