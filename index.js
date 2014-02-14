@@ -12,6 +12,7 @@ var browserify = require('browserify')
 
 module.exports = function (opts, cb) {
   if (typeof opts === 'string') opts = {entry: opts};
+  if (typeof cb === 'string') opts.output = cb;
   opts = opts || {}
   opts.shim = opts.shim || {}
   opts.debug = opts.debug || false
