@@ -1,4 +1,5 @@
 var browserify = require('browserify')
+  , path       = require('path')
   , watchify   = require('watchify')
   , shim       = require('browserify-shim')
   , ejsify     = require('ejsify')
@@ -21,7 +22,7 @@ module.exports = function (opts, cb) {
     })
   }
 
-  bundle.require(require.resolve(opts.entry), {entry: true})
+  bundle.require(path.resolve(process.cwd(), opts.entry), {entry: true})
 
   // ensure brfs runs last because it requires valid js
   opts.transforms = [envify, ejsify, hbsfy, jadeify, partialify].concat(opts.transforms || []).concat(brfs)
