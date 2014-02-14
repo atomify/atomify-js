@@ -8,6 +8,7 @@ var browserify = require('browserify')
   , envify     = require('envify')
   , partialify = require('partialify')
   , brfs       = require('brfs')
+  , writer     = require('write-to-path')
 
 module.exports = function (opts, cb) {
   if (typeof opts === 'string') opts = {entry: opts};
@@ -30,5 +31,9 @@ module.exports = function (opts, cb) {
     bundle.transform(transform)
   })
 
-  bundle.bundle(opts, cb)
+  if (opts.output) {
+    bundle.bundle(opts, writer(path.resolve(process.cwd(), opts.output), {debug: opts.debug}))
+  } else {
+    bundle.bundle(opts, cb)
+  }
 }
