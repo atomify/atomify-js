@@ -1,0 +1,1 @@
+var dep = require('./ejsify-dep.ejs')
