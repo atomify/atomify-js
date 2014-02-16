@@ -11,11 +11,15 @@ var browserify = require('browserify')
   , writer     = require('write-to-path')
 
 module.exports = function (opts, cb) {
-  if (typeof opts === 'string') opts = {entry: opts};
-  if (typeof cb === 'string') opts.output = cb;
-  opts = opts || {}
+  if (Array.isArray(opts)) opts = {entries: opts}
+  if (typeof opts === 'string') opts = {entries: [opts]}
+  if (opts.entry) opts.entries = [opts.entry]
+
+  if (typeof cb === 'string') opts.output = cb
+
   opts.shim = opts.shim || {}
   opts.debug = opts.debug || false
+
   var b = shim(opts.watch ? watchify() : browserify(), opts.shim)
 
   if (opts.watch) {
@@ -24,7 +28,9 @@ module.exports = function (opts, cb) {
     })
   }
 
-  b.require(path.resolve(process.cwd(), opts.entry), {entry: true})
+  opts.entries.forEach(function (entry) {
+    b.add(path.resolve(process.cwd(), entry))
+  })
 
   // ensure brfs runs last because it requires valid js
   opts.transforms = [envify, ejsify, hbsfy, jadeify, partialify].concat(opts.transforms || []).concat(brfs)
