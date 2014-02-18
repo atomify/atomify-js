@@ -28,7 +28,7 @@
     "ejsify": "~0.0.2",
     "envify": "~1.0.1",
     "watchify": "~0.6.1",
-    "partialify": "~2.1.0",
+    "partialify": "~2.2.0",
     "write-to-path": "~0.1.0"
   },
   "devDependencies": {
