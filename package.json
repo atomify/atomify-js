@@ -17,7 +17,10 @@
     "npm",
     "atomic"
   ],
-  "author": "techwraith",
+  "contributors": [
+    "Daniel Erickson <techwraithpdx@gmail.com> (http://techwraith.com/)",
+    "Ben Clinkinbeard <ben.clinkinbeard@gmail.com> (http://benclinkinbeard.com/)"
+  ],
   "license": "MIT",
   "dependencies": {
     "browserify": "~3.30.0",
