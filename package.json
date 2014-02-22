@@ -1,7 +1,7 @@
 {
   "name": "atomify-js",
   "version": "0.7.0",
-  "description": "Atomic JavaScript - Use Browserify, transforms, and templates (Handlebars, EJS, Jade, etc.) to bundle reusable front-end modules",
+  "description": "Atomic JavaScript - Reusable front-end modules using Browserify, transforms, and templates",
   "main": "index.js",
   "scripts": {
     "test": "tape test/*.js"
