@@ -17,10 +17,10 @@ module.exports = function (opts, cb) {
 
   if (typeof cb === 'string') opts.output = cb
 
-  opts.shim = opts.shim || {}
   opts.debug = opts.debug || false
 
-  var b = shim(opts.watch ? watchify() : browserify(), opts.shim)
+  var b = opts.watch ? watchify() : browserify()
+  if (opts.shim) b = shim(b, opts.shim)
 
   if (opts.watch) {
     b.on('update', function () {
