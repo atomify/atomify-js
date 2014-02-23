@@ -1,5 +1,2 @@
-node_modules/
-node_modules/brfs
-node_modules/browserify
-node_modules/handlebars-runtime
-node_modules/hbsfy
+node_modules
+.idea
