@@ -32,7 +32,7 @@
     "ejsify": "~0.0.2",
     "envify": "^1.2.0",
     "watchify": "~0.6.1",
-    "partialify": "^3.0.0",
+    "partialify": "^3.1.0",
     "write-to-path": "^1.0.0"
   },
   "devDependencies": {

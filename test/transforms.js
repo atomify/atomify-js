@@ -46,6 +46,19 @@ test('partialify', function (t) {
   })
 })
 
+test('partialify-custom', function (t) {
+  t.plan(1)
+
+  js({
+    entry: prefix + 'partialify-entry-custom.js'
+    , transforms: [
+      ['partialify', {'alsoAllow': 'xml'}]
+    ]
+  }, function (err, src) {
+    t.equal(read('partialify-bundle-custom.js'), src)
+  })
+})
+
 test('brfs', function (t) {
   t.plan(1)
 

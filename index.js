@@ -35,7 +35,11 @@ module.exports = function (opts, cb) {
   // ensure brfs runs last because it requires valid js
   var transforms = [envify, ejsify, hbsfy, jadeify, partialify].concat(opts.transforms || []).concat([brfs])
   transforms.forEach(function (transform) {
-    b.transform(transform)
+    if (Array.isArray(transform)) {
+      b.transform(transform[1], transform[0])
+    } else {
+      b.transform(transform)
+    }
   })
 
   if (opts.output) {
