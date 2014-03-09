@@ -7,6 +7,7 @@ var browserify = require('browserify')
   , jadeify    = require('jadeify')
   , envify     = require('envify')
   , partialify = require('partialify')
+  , resrcify   = require('resrcify')
   , brfs       = require('brfs')
   , writer     = require('write-to-path')
 
@@ -41,6 +42,16 @@ module.exports = function (opts, cb) {
       b.transform(transform)
     }
   })
+
+  if (opts.assets) {
+    var assets = ['resrcify', {
+      dest: opts.assets.dest || ''
+      , prefix: opts.assets.prefix || ''
+    }]
+
+    opts.globalTransforms = opts.globalTransforms || []
+    opts.globalTransforms.push(assets)
+  }
 
   if (opts.globalTransforms) {
     opts.globalTransforms.forEach(function (gt) {
