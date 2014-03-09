@@ -42,6 +42,18 @@ module.exports = function (opts, cb) {
     }
   })
 
+  if (opts.globalTransforms) {
+    opts.globalTransforms.forEach(function (gt) {
+      if (Array.isArray(gt)) {
+        var gto = gt[1]
+        gto.global = true
+        b.transform(gto, gt[0])
+      } else {
+        b.transform({global: true}, gt)
+      }
+    })
+  }
+
   if (opts.output) {
     b.bundle(opts, writer(path.resolve(process.cwd(), opts.output), {debug: opts.debug}))
   } else {
