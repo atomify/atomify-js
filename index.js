@@ -43,7 +43,7 @@ module.exports = function (opts, cb) {
   })
 
   if (opts.output) {
-    b.bundle(opts, writer(path.resolve(process.cwd(), opts.output), {debug: opts.debug}))
+    return b.bundle(opts, writer(path.resolve(process.cwd(), opts.output), {debug: opts.debug}))
   } else {
     return b.bundle(opts, cb)
   }
