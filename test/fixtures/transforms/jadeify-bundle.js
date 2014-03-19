@@ -219,8 +219,9 @@ var jade = require("jade/runtime");
 module.exports = function template(locals) {
 var buf = [];
 var jade_mixins = {};
-var locals_ = (locals || {}),title = locals_.title;
-buf.push("<h1>" + (jade.escape(null == (jade.interp = title) ? "" : jade.interp)) + "</h1>");;return buf.join("");
+var jade_interp;
+;var locals_for_with = (locals || {});(function (title) {
+buf.push("<h1>" + (jade.escape(null == (jade_interp = title) ? "" : jade_interp)) + "</h1>");}("title" in locals_for_with?locals_for_with.title:typeof title!=="undefined"?title:undefined));;return buf.join("");
 };
 },{"jade/runtime":2}],4:[function(require,module,exports){
 var dep = require('./jadeify-dep.jade')
