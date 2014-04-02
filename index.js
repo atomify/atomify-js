@@ -33,8 +33,14 @@ module.exports = function (opts, cb) {
     b.add(path.resolve(process.cwd(), entry))
   })
 
+  // Browserify modifies the transforms property once opts is passed in to bundle()
+  // so we copy that prop here to ensure we only use what is passed in from config
+  if (!opts._transforms) {
+    opts._transforms = opts.transforms ? opts.transforms.slice(0) : []
+  }
+
   // ensure brfs runs last because it requires valid js
-  var transforms = [envify, ejsify, hbsfy, jadeify, partialify].concat(opts.transforms || []).concat([brfs])
+  var transforms = [envify, ejsify, hbsfy, jadeify, partialify].concat(opts._transforms).concat([brfs])
   transforms.forEach(function (transform) {
     if (Array.isArray(transform)) {
       b.transform(transform[1], transform[0])
