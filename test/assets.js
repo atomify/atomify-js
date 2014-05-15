@@ -12,7 +12,7 @@ test('opts.assets', function (t) {
   js({
     entry: prefix + 'entry.js'
     , assets: {
-      dest: prefix + '/output/img'
+        dest: prefix + '/output/img'
       , prefix: 'img/'
     }
   }, function (err, src) {
