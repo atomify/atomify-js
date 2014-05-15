@@ -20,7 +20,8 @@
   ],
   "contributors": [
     "Daniel Erickson <techwraithpdx@gmail.com> (http://techwraith.com/)",
-    "Ben Clinkinbeard <ben.clinkinbeard@gmail.com> (http://benclinkinbeard.com/)"
+    "Ben Clinkinbeard <ben.clinkinbeard@gmail.com> (http://benclinkinbeard.com/)",
+    "Ben Ng <me@benng.me> (http://benng.me/)"
   ],
   "license": "MIT",
   "dependencies": {
@@ -34,7 +35,8 @@
     "watchify": "~0.6.1",
     "partialify": "^3.1.0",
     "resrcify": "^0.2.0",
-    "write-to-path": "^1.0.0"
+    "write-to-path": "^1.0.0",
+    "minifyify": "^3.0.0-beta6"
   },
   "devDependencies": {
     "tape": "^2.5.0",

@@ -9,6 +9,7 @@ var browserify = require('browserify')
   , partialify = require('partialify')
   , brfs       = require('brfs')
   , writer     = require('write-to-path')
+  , minifyify  = require('minifyify')
 
 module.exports = function (opts, cb) {
   if (Array.isArray(opts)) opts = {entries: opts}
@@ -17,7 +18,12 @@ module.exports = function (opts, cb) {
 
   if (typeof cb === 'string') opts.output = cb
 
-  opts.debug = opts.debug || false
+  opts.minify = opts.minify || false
+  opts.debug = opts.debug || opts.minify || false
+
+  if(opts.output && opts.minify) {
+    throw new Error('Minification only works with a callback')
+  }
 
   var b = opts.watch ? watchify() : browserify()
   if (opts.shim) b = shim(b, opts.shim)
@@ -73,6 +79,19 @@ module.exports = function (opts, cb) {
   if (opts.output) {
     return b.bundle(opts, writer(path.resolve(process.cwd(), opts.output), {debug: opts.debug}))
   } else {
-    return b.bundle(opts, cb)
+    if(opts.minify) {
+      var minifier = new minifyify({
+        map: typeof opts.minify === 'string' ? opts.minify : undefined
+      , compressPaths: function (f) {
+          return path.relative(opts.entries[0], f)
+        }
+      })
+
+      b.transform({global: true}, minifier.transformer)
+      b.bundle(opts).pipe(minifier.consumer(cb))
+    }
+    else {
+      return b.bundle(opts, cb)
+    }
   }
 }
