@@ -80,15 +80,16 @@ module.exports = function (opts, cb) {
     return b.bundle(opts, writer(path.resolve(process.cwd(), opts.output), {debug: opts.debug}))
   } else {
     if(opts.minify) {
-      var minifier = new minifyify({
+      var minifyOpts = {
         map: typeof opts.minify === 'string' ? opts.minify : undefined
+      , source: typeof opts.source === 'string' ? opts.source : 'bundle.js'
       , compressPaths: function (f) {
           return path.relative(opts.entries[0], f)
         }
-      })
+      }
 
-      b.transform({global: true}, minifier.transformer)
-      b.bundle(opts).pipe(minifier.consumer(cb))
+      b.plugin(minifyify, minifyOpts)
+      b.bundle(opts, cb)
     }
     else {
       return b.bundle(opts, cb)
