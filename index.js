@@ -83,8 +83,8 @@ module.exports = function (opts, cb) {
       var minifyOpts = {
         map: typeof opts.minify === 'string' ? opts.minify : undefined
       , source: typeof opts.source === 'string' ? opts.source : 'bundle.js'
-      , compressPaths: function (f) {
-          return path.relative(opts.entries[0], f)
+      , compressPath: function (f) {
+          return path.relative(path.dirname(opts.entries[0]), f)
         }
       }
 
