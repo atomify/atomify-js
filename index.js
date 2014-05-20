@@ -16,7 +16,10 @@ module.exports = function (opts, cb) {
   if (typeof opts === 'string') opts = {entries: [opts]}
   if (opts.entry) opts.entries = [opts.entry]
 
+  if (opts.output && cb) throw new Error('opts.output and a callback are mutually exclusive')
+
   if (typeof cb === 'string') opts.output = cb
+  if (opts.output) cb = writer(path.resolve(process.cwd(), opts.output), {debug: opts.debug})
 
   opts.debug = opts.debug || false
 
@@ -71,9 +74,5 @@ module.exports = function (opts, cb) {
     })
   }
 
-  if (opts.output) {
-    return b.bundle(opts, writer(path.resolve(process.cwd(), opts.output), {debug: opts.debug}))
-  } else {
-    return b.bundle(opts, cb)
-  }
+  return b.bundle(opts, cb)
 }

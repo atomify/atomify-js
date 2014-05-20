@@ -30,22 +30,18 @@ test('basic with output property', function (t) {
   }, 100)
 })
 
-test('output property prevents callback running', function (t) {
+test('providing both output property and callback throws error', function (t) {
   t.plan(1)
 
   var file = 'bundle-output-property.js'
-    , cb = false
+    , cfg = {
+      entry: prefix + 'entry.js'
+      , output: prefix + file
+    }
 
-  js({
-    entry: prefix + 'entry.js'
-    , output: prefix + file
-  }, function (err, src) {
-    cb = true
+  t.throws(function () {
+    js(cfg, function () {})
   })
-
-  setTimeout(function () {
-    t.false(cb)
-  }, 100)
 })
 
 test('callback', function (t) {
