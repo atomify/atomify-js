@@ -1,6 +1,6 @@
 {
   "name": "atomify-js",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "Atomic JavaScript - Reusable front-end modules using Browserify, transforms, and templates",
   "main": "index.js",
   "scripts": {
