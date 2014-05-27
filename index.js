@@ -16,16 +16,23 @@ module.exports = function (opts, cb) {
   if (typeof opts === 'string') opts = {entries: [opts]}
   if (opts.entry) opts.entries = [opts.entry]
 
-//  if (opts.output && cb) throw new Error('opts.output and a callback are mutually exclusive')
-  // need to figure out a better way to handle this
-  // if user specifies output AND their own callback, i guess we need to write
-  // the file AND call their callback with err, src (no sane person should do this)
-  // we cannot throw an error here, however, because certain CLI usage
-  // (like atomify -o dist/bundle -j [ -e src/entry.js ]) results in the CLI
-  // calling us with output and the writer cb specified
+  if (typeof cb === 'string') opts.output = cb // js('entry.js', 'bundle.js')
 
-  if (typeof cb === 'string') opts.output = cb
-  if (opts.output) cb = writer(path.resolve(process.cwd(), opts.output), {debug: opts.debug})
+  if (opts.output) {
+    // we definitely have to write the file
+    var writeFile = writer(path.resolve(process.cwd(), opts.output), {debug: opts.debug})
+
+    // we might need to call a callback also
+    if (typeof cb === 'function') {
+      var _cb = cb
+      cb = function (err, src) {
+        writeFile(err, src)
+        _cb(err, src)
+      }
+    } else {
+      cb = writeFile
+    }
+  }
 
   opts.debug = opts.debug || false
 

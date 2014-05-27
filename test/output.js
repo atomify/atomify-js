@@ -30,17 +30,19 @@ test('basic with output property', function (t) {
   }, 100)
 })
 
-test('providing both output property and callback throws error', function (t) {
-  t.plan(1)
+test('providing output property and callback writes file and calls callback', function (t) {
+  t.plan(2)
 
-  var file = 'bundle-output-property.js'
-    , cfg = {
+  var cfg = {
       entry: prefix + 'entry.js'
-      , output: prefix + file
+      , output: prefix + 'bundle-output-property.js'
     }
 
-  t.throws(function () {
-    js(cfg, function () {})
+  if (fs.existsSync(cfg.output)) fs.unlinkSync(cfg.output)
+
+  js(cfg, function (err, src) {
+    t.ok(fs.existsSync(cfg.output))
+    t.equal(src, read('bundle-output-property.js'))
   })
 })
 
