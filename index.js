@@ -65,27 +65,27 @@ module.exports = function (opts, cb) {
     }
   })
 
+  // reset list of global transforms every time
+  opts._globalTransforms = opts.globalTransforms ? opts.globalTransforms.slice(0) : []
+
   if (opts.assets) {
     var assets = ['resrcify', {
       dest: opts.assets.dest || ''
       , prefix: opts.assets.prefix || ''
     }]
 
-    opts.globalTransforms = opts.globalTransforms || []
-    opts.globalTransforms.push(assets)
+    opts._globalTransforms.push(assets)
   }
 
-  if (opts.globalTransforms) {
-    opts.globalTransforms.forEach(function (gt) {
-      if (Array.isArray(gt)) {
-        var gto = gt[1]
-        gto.global = true
-        b.transform(gto, gt[0])
-      } else {
-        b.transform({global: true}, gt)
-      }
-    })
-  }
+  opts._globalTransforms.forEach(function (gt) {
+    if (Array.isArray(gt)) {
+      var gto = gt[1]
+      gto.global = true
+      b.transform(gto, gt[0])
+    } else {
+      b.transform({global: true}, gt)
+    }
+  })
 
   return b.bundle(opts, cb)
 }
