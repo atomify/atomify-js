@@ -8,39 +8,11 @@ escape = escape || function (html){
     .replace(/'/g, '&#39;')
     .replace(/"/g, '&quot;');
 };
-var __stack = { lineno: 1, input: "<h1><%= title %></h1>", filename: "/Users/bclinkinbeard/Code/atomify/atomify-js/test/fixtures/transforms/ejsify-dep.ejs" };
-function rethrow(err, str, filename, lineno){
-  var lines = str.split('\n')
-    , start = Math.max(lineno - 3, 0)
-    , end = Math.min(lines.length, lineno + 3);
-
-  // Error context
-  var context = lines.slice(start, end).map(function(line, i){
-    var curr = i + start + 1;
-    return (curr == lineno ? ' >> ' : '    ')
-      + curr
-      + '| '
-      + line;
-  }).join('\n');
-
-  // Alter exception message
-  err.path = filename;
-  err.message = (filename || 'ejs') + ':'
-    + lineno + '\n'
-    + context + '\n\n'
-    + err.message;
-  
-  throw err;
-}
-try {
 var buf = [];
 with (locals || {}) { (function(){ 
- buf.push('<h1>', escape((__stack.lineno=1,  title )), '</h1>'); })();
+ buf.push('<h1>', escape((1,  title )), '</h1>'); })();
 } 
 return buf.join('');
-} catch (err) {
-  rethrow(err, __stack.input, __stack.filename, __stack.lineno);
-}
 })
 },{}],2:[function(require,module,exports){
 var dep = require('./ejsify-dep.ejs')

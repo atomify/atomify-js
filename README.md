@@ -64,7 +64,7 @@ becomes
 
 and a copy of logo.png will now exist at `dist/assets/4314d804f81c8510.png`
 
-You may also provide any valid [browserify bundle options](https://github.com/substack/node-browserify#bbundleopts-cb) in the `opts` object as well.
+You may also provide any valid [browserify bundle options](https://github.com/substack/node-browserify#bbundleopts-cb) in the `opts` object as well, and they will be passed directly to Browserify.
 
 ### callback
 
