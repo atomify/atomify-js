@@ -1,5 +1,6 @@
 var browserify = require('browserify')
   , path       = require('path')
+  , events     = require('events')
   , watchify   = require('watchify')
   , ejsify     = require('ejsify')
   , hbsfy      = require('hbsfy')
@@ -9,8 +10,9 @@ var browserify = require('browserify')
   , resrcify   = require('resrcify')
   , brfs       = require('brfs')
   , writer     = require('write-to-path')
+  , emitter    = new events.EventEmitter()
 
-module.exports = function (opts, cb) {
+var ctor = module.exports = function (opts, cb) {
   if (Array.isArray(opts)) opts = {entries: opts}
   if (typeof opts === 'string') opts = {entries: [opts]}
   if (opts.entry) opts.entries = [opts.entry]
@@ -38,8 +40,16 @@ module.exports = function (opts, cb) {
   var b = opts.watch ? watchify() : browserify()
 
   if (opts.watch) {
-    b.on('update', function () {
+    b.on('update', function (ids) {
+      ids.forEach(function (id) {
+        emitter.emit('changed', id)
+      })
+
       b.bundle(opts, cb)
+    })
+
+    b.on('time', function (time) {
+      emitter.emit('bundle', time)
     })
   }
 
@@ -87,3 +97,5 @@ module.exports = function (opts, cb) {
 
   return b.bundle(opts, cb)
 }
+
+ctor.emitter = emitter
