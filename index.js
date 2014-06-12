@@ -1,7 +1,6 @@
 var browserify = require('browserify')
   , path       = require('path')
   , watchify   = require('watchify')
-  , shim       = require('browserify-shim')
   , ejsify     = require('ejsify')
   , hbsfy      = require('hbsfy')
   , jadeify    = require('jadeify')
@@ -37,7 +36,6 @@ module.exports = function (opts, cb) {
   opts.debug = opts.debug || false
 
   var b = opts.watch ? watchify() : browserify()
-  if (opts.shim) b = shim(b, opts.shim)
 
   if (opts.watch) {
     b.on('update', function () {

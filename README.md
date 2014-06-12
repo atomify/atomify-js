@@ -64,8 +64,6 @@ becomes
 
 and a copy of logo.png will now exist at `dist/assets/4314d804f81c8510.png`
 
-**opts.shim** - If you are using [browserify-shim](https://github.com/thlorenz/browserify-shim) 2.x, you can provide your shim config in this property. browserify-shim version 3 is configured using `package.json` and should be used if possible.
-
 You may also provide any valid [browserify bundle options](https://github.com/substack/node-browserify#bbundleopts-cb) in the `opts` object as well.
 
 ### callback
