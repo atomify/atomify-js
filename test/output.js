@@ -60,3 +60,17 @@ test('callback', function (t) {
     t.true(cb)
   }, 100)
 })
+
+test('output to non-existent directory', function (t) {
+  t.plan(1)
+
+  var file = 'new-dir/' + 'bundle-output-new-dir.js'
+
+  if (fs.existsSync(prefix + file)) fs.unlinkSync(prefix + file)
+
+  js(prefix + 'entry.js', prefix + file)
+
+  setTimeout(function () {
+    t.equal(read(file), read('bundle.js'))
+  }, 100)
+})
