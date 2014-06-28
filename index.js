@@ -1,6 +1,8 @@
 var browserify = require('browserify')
   , path       = require('path')
+  , fs         = require('fs')
   , events     = require('events')
+  , mkdirp     = require('mkdirp')
   , watchify   = require('watchify')
   , ejsify     = require('ejsify')
   , hbsfy      = require('hbsfy')
@@ -21,7 +23,11 @@ var ctor = module.exports = function (opts, cb) {
 
   if (opts.output) {
     // we definitely have to write the file
-    var writeFile = writer(path.resolve(process.cwd(), opts.output), {debug: opts.debug})
+    var outputPath = path.resolve(process.cwd(), opts.output)
+      , outputDir = path.dirname(outputPath)
+      , writeFile = writer(outputPath, {debug: opts.debug})
+
+    if (!fs.existsSync(outputDir)) mkdirp.sync(outputDir)
 
     // we might need to call a callback also
     if (typeof cb === 'function') {
