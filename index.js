@@ -9,6 +9,7 @@ var browserify = require('browserify')
   , jadeify    = require('jadeify')
   , envify     = require('envify')
   , partialify = require('partialify')
+  , minifyify  = require('minifyify')
   , brfs       = require('brfs')
   , writer     = require('write-to-path')
   , emitter    = new events.EventEmitter()
@@ -31,9 +32,9 @@ var ctor = module.exports = function (opts, cb) {
     // we might need to call a callback also
     if (typeof cb === 'function') {
       var _outputcb = cb
-      cb = function (err, src) {
+      cb = function (err, src, map) {
         writeFile(err, src)
-        _outputcb(err, src)
+        _outputcb(err, src, map)
       }
     } else {
       cb = writeFile
@@ -43,11 +44,19 @@ var ctor = module.exports = function (opts, cb) {
   var _buffercb = cb
 
   // Browserify 5 gives you a buffer instead of a string
-  cb = function (err, buff) {
-    _buffercb(err, Buffer.isBuffer(buff) ? buff.toString() : buff)
+  cb = function (err, buff, map) {
+    _buffercb(err, Buffer.isBuffer(buff) ? buff.toString() : buff, map)
   }
 
-  opts.debug = opts.debug || false
+  opts.debug  = opts.debug || false
+
+  if(opts.minify === true) {
+    opts.minify = {map: false}
+  }
+  // Debug mode must be on to get sourcemaps
+  else if(typeof opts.minify == 'object') {
+    opts.debug = true
+  }
 
   var b = opts.watch ? watchify() : browserify({debug: opts.debug})
 
@@ -92,6 +101,10 @@ var ctor = module.exports = function (opts, cb) {
       b.transform({global: true}, gt)
     }
   })
+
+  if(typeof opts.minify == 'object') {
+    b.plugin(minifyify, opts.minify)
+  }
 
   if (opts.watch) {
     b.on('update', function (ids) {
