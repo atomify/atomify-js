@@ -3,7 +3,7 @@ var test = require('tape')
   , fs = require('fs')
   , prefix = __dirname + '/fixtures/output/'
   , read = function (file) {
-    return fs.readFileSync(prefix + file, 'utf8')
+    return fs.readFileSync(prefix + file, 'utf8').toString()
   }
 
 test('basic with output string', function (t) {

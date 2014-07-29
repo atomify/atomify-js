@@ -3,7 +3,7 @@ var test = require('tape')
   , fs = require('fs')
   , prefix = __dirname + '/fixtures/transforms/'
   , read = function (file) {
-    return fs.readFileSync(prefix + file, 'utf8')
+    return fs.readFileSync(prefix + file, 'utf8').toString()
   }
 
 test('envify', function (t) {

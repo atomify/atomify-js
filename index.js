@@ -9,7 +9,6 @@ var browserify = require('browserify')
   , jadeify    = require('jadeify')
   , envify     = require('envify')
   , partialify = require('partialify')
-  , resrcify   = require('resrcify')
   , brfs       = require('brfs')
   , writer     = require('write-to-path')
   , emitter    = new events.EventEmitter()
@@ -31,33 +30,26 @@ var ctor = module.exports = function (opts, cb) {
 
     // we might need to call a callback also
     if (typeof cb === 'function') {
-      var _cb = cb
+      var _outputcb = cb
       cb = function (err, src) {
         writeFile(err, src)
-        _cb(err, src)
+        _outputcb(err, src)
       }
     } else {
       cb = writeFile
     }
   }
 
+  var _buffercb = cb
+
+  // Browserify 5 gives you a buffer instead of a string
+  cb = function (err, buff) {
+    _buffercb(err, Buffer.isBuffer(buff) ? buff.toString() : buff)
+  }
+
   opts.debug = opts.debug || false
 
-  var b = opts.watch ? watchify() : browserify()
-
-  if (opts.watch) {
-    b.on('update', function (ids) {
-      ids.forEach(function (id) {
-        emitter.emit('changed', id)
-      })
-
-      b.bundle(opts, cb)
-    })
-
-    b.on('time', function (time) {
-      emitter.emit('bundle', time)
-    })
-  }
+  var b = opts.watch ? watchify() : browserify({debug: opts.debug})
 
   opts.entries.forEach(function (entry) {
     b.add(path.resolve(process.cwd(), entry))
@@ -101,7 +93,21 @@ var ctor = module.exports = function (opts, cb) {
     }
   })
 
-  return b.bundle(opts, cb)
+  if (opts.watch) {
+    b.on('update', function (ids) {
+      ids.forEach(function (id) {
+        emitter.emit('changed', id)
+      })
+
+      b.bundle(cb)
+    })
+
+    b.on('time', function (time) {
+      emitter.emit('bundle', time)
+    })
+  }
+
+  return b.bundle(cb)
 }
 
 ctor.emitter = emitter
