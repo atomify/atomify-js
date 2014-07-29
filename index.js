@@ -45,7 +45,8 @@ var ctor = module.exports = function (opts, cb) {
 
   // Browserify 5 gives you a buffer instead of a string
   cb = function (err, buff, map) {
-    _buffercb(err, Buffer.isBuffer(buff) ? buff.toString() : buff, map)
+    if(typeof _buffercb == 'function')
+      _buffercb(err, Buffer.isBuffer(buff) ? buff.toString() : buff, map)
   }
 
   opts.debug  = opts.debug || false
