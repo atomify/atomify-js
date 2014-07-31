@@ -19,13 +19,15 @@ atomify-js is a tool that makes it easy to create small, atomic modules of clien
 
 In its default form, atomify-js takes an `opts` object and a `callback` function.
 
-### opts 
+### opts
 
 **opts.entry** or **opts.entries** - Path or paths that will be provided to Browserify as entry points. For convenience, you may simply provide a string or array of strings in place of the `opts` object, which will be treated as the `entry` or `entries` property, respectively. Paths will be resolved relative to `process.cwd()`.
 
 **opts.output** - If you simply want your bundle written out to a file, provide the path in this property. Note that your `callback` will NOT be called if this property is present. Path will be resolved relative to `process.cwd()`.
 
 **opts.debug** - Passed to Browserify to generate source maps if `true`. Also provides additional CLI output, if applicable.
+
+**opts.minify** - If `true`, minifies source code. If object, passed as options to [minifyify](https://github.com/ben-ng/minifyify). If `false`, no minification.
 
 **opts.watch** - If `true`, [watchify](https://github.com/substack/watchify) will be used to create a file watcher and speed up subsequent builds.
 
@@ -76,7 +78,7 @@ Standard Browserify bundle callback with `cb(err, src)` signature. Not called if
 // entry.js
 var thing = require('thing')
   , template = require('./template.html.hbs')
-  
+
 template({param: 'param'})
 ```
 
@@ -86,11 +88,15 @@ var js = require('atomify-js')
 
 var opts = {
   entry: './entry.js'
-, debug: true // default: `false`
+, minify: {
+    // sourceMappingURL comment will be added to src,
+    // while the sourcemap is returned as the third argument to cb
+    map: 'app.map.json'
+  }
 }
 
-js(opts, function (err, src) {
-  // do something with the src
+js(opts, function (err, src, map) {
+  // do something with the src and map
 })
 ```
 

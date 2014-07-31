@@ -3,14 +3,14 @@ var test = require('tape')
   , fs = require('fs')
   , prefix = __dirname + '/fixtures/entry/'
   , read = function (file) {
-    return fs.readFileSync(prefix + file, 'utf8')
+    return fs.readFileSync(prefix + file, 'utf8').toString()
   }
 
 test('single entry string', function (t) {
   t.plan(1)
 
   js(prefix + 'entry-1.js', function (err, src) {
-    t.equal(read('bundle-single-entry.js'), src)
+    t.equal(src, read('bundle-single-entry.js'))
   })
 })
 
@@ -18,7 +18,7 @@ test('opts.entry', function (t) {
   t.plan(1)
 
   js({entry: prefix + 'entry-1.js'}, function (err, src) {
-    t.equal(read('bundle-single-entry.js'), src)
+    t.equal(src, read('bundle-single-entry.js'))
   })
 })
 
@@ -26,7 +26,7 @@ test('entry strings array', function (t) {
   t.plan(1)
 
   js([prefix + 'entry-1.js', prefix + 'entry-2.js'], function (err, src) {
-    t.equal(read('bundle-multiple-entries.js'), src)
+    t.equal(src, read('bundle-multiple-entries.js'))
   })
 })
 
@@ -36,6 +36,6 @@ test('opts.entries', function (t) {
   js({
     entries: [prefix + 'entry-1.js', prefix + 'entry-2.js']
   }, function (err, src) {
-    t.equal(read('bundle-multiple-entries.js'), src)
+    t.equal(src, read('bundle-multiple-entries.js'))
   })
 })

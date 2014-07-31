@@ -9,7 +9,7 @@ var browserify = require('browserify')
   , jadeify    = require('jadeify')
   , envify     = require('envify')
   , partialify = require('partialify')
-  , resrcify   = require('resrcify')
+  , minifyify  = require('minifyify')
   , brfs       = require('brfs')
   , writer     = require('write-to-path')
   , emitter    = new events.EventEmitter()
@@ -31,33 +31,35 @@ var ctor = module.exports = function (opts, cb) {
 
     // we might need to call a callback also
     if (typeof cb === 'function') {
-      var _cb = cb
-      cb = function (err, src) {
+      var _outputcb = cb
+      cb = function (err, src, map) {
         writeFile(err, src)
-        _cb(err, src)
+        _outputcb(err, src, map)
       }
     } else {
       cb = writeFile
     }
   }
 
-  opts.debug = opts.debug || false
+  var _buffercb = cb
 
-  var b = opts.watch ? watchify() : browserify()
-
-  if (opts.watch) {
-    b.on('update', function (ids) {
-      ids.forEach(function (id) {
-        emitter.emit('changed', id)
-      })
-
-      b.bundle(opts, cb)
-    })
-
-    b.on('time', function (time) {
-      emitter.emit('bundle', time)
-    })
+  // Browserify 5 gives you a buffer instead of a string
+  cb = function (err, buff, map) {
+    if(typeof _buffercb == 'function')
+      _buffercb(err, Buffer.isBuffer(buff) ? buff.toString() : buff, map)
   }
+
+  opts.debug  = opts.debug || false
+
+  if(opts.minify === true) {
+    opts.minify = {map: false}
+  }
+  // Debug mode must be on to get sourcemaps
+  else if(typeof opts.minify == 'object') {
+    opts.debug = true
+  }
+
+  var b = opts.watch ? watchify() : browserify({debug: opts.debug})
 
   opts.entries.forEach(function (entry) {
     b.add(path.resolve(process.cwd(), entry))
@@ -101,7 +103,25 @@ var ctor = module.exports = function (opts, cb) {
     }
   })
 
-  return b.bundle(opts, cb)
+  if(typeof opts.minify == 'object') {
+    b.plugin(minifyify, opts.minify)
+  }
+
+  if (opts.watch) {
+    b.on('update', function (ids) {
+      ids.forEach(function (id) {
+        emitter.emit('changed', id)
+      })
+
+      b.bundle(cb)
+    })
+
+    b.on('time', function (time) {
+      emitter.emit('bundle', time)
+    })
+  }
+
+  return b.bundle(cb)
 }
 
 ctor.emitter = emitter
