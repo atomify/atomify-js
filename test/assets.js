@@ -17,6 +17,6 @@ test('opts.assets', function (t) {
     }
   }, function (err, src) {
     t.equal(read('output/bundle.js'), src)
-    t.ok(fs.existsSync(prefix + '/output/img/4314d804f81c8510.png'), 'file exists')
+    t.ok(fs.existsSync(prefix + '/output/img/logo-4314d804f81c8510.png'), 'file exists')
   })
 })
