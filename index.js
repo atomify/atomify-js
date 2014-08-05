@@ -18,6 +18,7 @@ var ctor = module.exports = function (opts, cb) {
   if (Array.isArray(opts)) opts = {entries: opts}
   if (typeof opts === 'string') opts = {entries: [opts]}
   if (opts.entry) opts.entries = [opts.entry]
+  if (!opts.entries) opts.entries = []
 
   if (typeof cb === 'string') opts.output = cb // js('entry.js', 'bundle.js')
 
@@ -100,6 +101,20 @@ var ctor = module.exports = function (opts, cb) {
       b.transform({global: true}, gt)
     }
   })
+
+  if (opts.require) {
+    if (Array.isArray(opts.require)) {
+      opts.require = { files: opts.require }
+    }
+
+    if (typeof opts.require === 'object') {
+      b.require(opts.require.files, opts.require.opts)
+    }
+  }
+
+  if (Array.isArray(opts.external)) {
+    b.external(opts.external)
+  }
 
   return b.bundle(opts, cb)
 }
