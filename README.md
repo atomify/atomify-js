@@ -23,7 +23,7 @@ In its default form, atomify-js takes an `opts` object and a `callback` function
 
 **opts.entry** or **opts.entries** - Path or paths that will be provided to Browserify as entry points. For convenience, you may simply provide a string or array of strings in place of the `opts` object, which will be treated as the `entry` or `entries` property, respectively. Paths will be resolved relative to `process.cwd()`.
 
-**opts.output** - If you simply want your bundle written out to a file, provide the path in this property. Note that your `callback` will NOT be called if this property is present. Path will be resolved relative to `process.cwd()`.
+**opts.output** - If you simply want your bundle written out to a file, provide the path in this property. Path will be resolved relative to `process.cwd()`.
 
 **opts.debug** - Passed to Browserify to generate source maps if `true`. Also provides additional CLI output, if applicable.
 
