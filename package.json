@@ -24,7 +24,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "brfs": "^1.1.1",
+    "brfs": "~1.0.2",
     "browserify": "^4.2.1",
     "ejsify": "~0.1.0",
     "envify": "^1.2.0",
