@@ -103,16 +103,13 @@ var ctor = module.exports = function (opts, cb) {
   })
 
   if (opts.require) {
-    if (Array.isArray(opts.require)) {
+    if (Array.isArray(opts.require) || typeof opts.require === 'string') {
       opts.require = { files: opts.require }
     }
-
-    if (typeof opts.require === 'object') {
-      b.require(opts.require.files, opts.require.opts)
-    }
+    b.require(opts.require.files, opts.require.opts)
   }
 
-  if (Array.isArray(opts.external)) {
+  if (Array.isArray(opts.external) || typeof opts.external === 'string') {
     b.external(opts.external)
   }
 
