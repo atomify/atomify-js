@@ -104,9 +104,9 @@ var ctor = module.exports = function (opts, cb) {
 
   if (opts.require) {
     if (Array.isArray(opts.require) || typeof opts.require === 'string') {
-      opts.require = { files: opts.require }
+      opts.require = { file: opts.require }
     }
-    b.require(opts.require.files, opts.require.opts)
+    b.require(opts.require.file, opts.require.opts)
   }
 
   if (Array.isArray(opts.external) || typeof opts.external === 'string') {
