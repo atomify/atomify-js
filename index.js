@@ -87,6 +87,7 @@ var ctor = module.exports = function (opts, cb) {
     var assets = ['resrcify', {
       dest: opts.assets.dest || ''
       , prefix: opts.assets.prefix || ''
+      , retainName: opts.assets.retainName || ''
     }]
 
     opts._globalTransforms.push(assets)
