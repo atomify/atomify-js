@@ -33,6 +33,10 @@ In its default form, atomify-js takes an `opts` object and a `callback` function
 
 **opts.globalTransforms** - Browserify global transforms that will process all files used in your application, including those within `node_modules`. You should take great care when defining global transforms as [noted in the Browserify documentation](https://github.com/substack/node-browserify#btransformopts-tr).
 
+**opts.require** - Array of files to pass to Browserify's `require` method.
+
+**opts.external** - Array of files to pass to Browserify's `external` method.
+
 **opts.assets** - One of the challenges with writing truly modular code is that your templates often refer to assets that need to be accessible from your final bundle. Configuring this option solves that problem by detecting asset paths in your templates, copying them to a new location, and rewriting the references to them to use the new paths. Paths in the `src` attribute of `img`, `video`, and `audio` tags will be processed according to your configuration.
 
 The processing is configured using two sub-properties of opts.assets: `dest` and `prefix`. The `dest` field determines the location files will be copied to, relative to `process.cwd()`, and `prefix` specifies what will be prepended to the new file names in the rewritten `src` attributes. The filenames are generated from a hash of the assets themselves, so you don't have to worry about name collisions.
