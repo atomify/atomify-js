@@ -77,3 +77,20 @@ test('brfs', function (t) {
     t.equal(src, read('brfs-bundle.js'), 'compiles correctly')
   })
 })
+
+test('reactify', function (t){
+  t.plan(3)
+
+  js(prefix + 'reactify-entry.jsx', function (err, src){
+    t.error(err)
+    t.ok(
+      src.indexOf('React.DOM.div(null, "hi")') > -1
+      , 'compiles jsx'
+    )
+
+    t.ok(
+      src.indexOf('render:function(){') > -1
+      , 'compiles es6'
+    )
+  })
+})
