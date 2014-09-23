@@ -61,6 +61,10 @@ var ctor = module.exports = function (opts, cb) {
     })
   }
 
+  b.on('package', function(pkg){
+    emitter.emit('package', pkg)
+  })
+
   opts.entries.forEach(function (entry) {
     b.add(path.resolve(process.cwd(), entry))
   })
