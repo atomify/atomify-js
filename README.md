@@ -1,6 +1,8 @@
 atomify-js
 ===============
 
+[![Build Status](https://travis-ci.org/atomify/atomify-js.svg)](https://travis-ci.org/atomify/atomify-js)
+
 Atomic JavaScript - Reusable front-end modules using Browserify, transforms, and templates
 
 ## Description
@@ -19,7 +21,7 @@ atomify-js is a tool that makes it easy to create small, atomic modules of clien
 
 In its default form, atomify-js takes an `opts` object and a `callback` function.
 
-### opts 
+### opts
 
 **opts.entry** or **opts.entries** - Path or paths that will be provided to Browserify as entry points. For convenience, you may simply provide a string or array of strings in place of the `opts` object, which will be treated as the `entry` or `entries` property, respectively. Paths will be resolved relative to `process.cwd()`.
 
@@ -80,7 +82,7 @@ Standard Browserify bundle callback with `cb(err, src)` signature. Not called if
 // entry.js
 var thing = require('thing')
   , template = require('./template.html.hbs')
-  
+
 template({param: 'param'})
 ```
 
