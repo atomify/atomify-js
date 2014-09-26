@@ -7,3 +7,5 @@ test
 npm-debug.log
 
 .jshint*
+
+CHANGELOG.*
