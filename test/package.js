@@ -8,11 +8,11 @@ var test = require('tape')
   }
 
 test('package emission', function (t) {
-  t.plan(2)
-  var ext = '.js'
-  js.emitter.on('package', function(pkg){
-    t.equal( path.join(prefix, 'entry' + ext), pkg )
-    ext = '.html'
+  t.plan(1)
+
+  js.emitter.once('package', function(pkg){
+    t.equal( path.join(prefix, 'entry.js'), pkg )
   })
+
   js({ entry: prefix + 'entry.js' });
 })
