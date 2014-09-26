@@ -11,7 +11,7 @@ test('envify', function (t) {
 
   js(prefix + 'envify-entry.js', function (err, src) {
     t.error(err, 'does not error')
-    t.equal(src, read('envify-bundle.js'), 'compiles correctly')
+    t.ok(src.indexOf('node_modules" === \'foo\') {') > -1, 'contains compiled vars')
   })
 })
 
@@ -20,7 +20,7 @@ test('ejsify', function (t) {
 
   js(prefix + 'ejsify-entry.js', function (err, src) {
     t.error(err, 'does not error')
-    t.equal(src, read('ejsify-bundle.js'), 'compiles correctly')
+    t.ok(src.indexOf('buf.push(\'<h1>\', escape((1,  title )), \'</h1>\'); })();') > -1, 'contains a compiled template')
   })
 })
 
