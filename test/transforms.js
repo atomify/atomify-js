@@ -3,51 +3,60 @@ var test = require('tape')
   , fs = require('fs')
   , prefix = __dirname + '/fixtures/transforms/'
   , read = function (file) {
-    return fs.readFileSync(prefix + file, 'utf8')
+    return fs.readFileSync(prefix + file, 'utf8').replace(/[\n]$/, '')
   }
 
 test('envify', function (t) {
-  t.plan(1)
+  t.plan(2)
 
   js(prefix + 'envify-entry.js', function (err, src) {
-    t.equal(read('envify-bundle.js'), src)
+    t.error(err, 'does not error')
+    t.equal(src, read('envify-bundle.js'), 'compiles correctly')
   })
 })
 
 test('ejsify', function (t) {
-  t.plan(1)
+  t.plan(2)
 
   js(prefix + 'ejsify-entry.js', function (err, src) {
-    t.equal(read('ejsify-bundle.js'), src)
+    t.error(err, 'does not error')
+    t.equal(src, read('ejsify-bundle.js'), 'compiles correctly')
   })
 })
 
 test('hbsfy', function (t) {
-  t.plan(1)
+  t.plan(2)
 
   js(prefix + 'hbsfy-entry.js', function (err, src) {
-    t.equal(read('hbsfy-bundle.js'), src)
+    t.error(err, 'does not error')
+    t.equal(src, read('hbsfy-bundle.js'), 'compiles correctly')
   })
 })
 
 test('jadeify', function (t) {
-  t.plan(1)
+  t.plan(2)
 
   js(prefix + 'jadeify-entry.js', function (err, src) {
-    t.equal(read('jadeify-bundle.js'), src)
+    t.error(err, 'does not error')
+    // this is more reliable than checking a whole fixture
+    t.ok(
+      src.indexOf('buf.push("<h1>" + (jade.escape(null == (jade_interp = title) ? "" : jade_interp)) + "</h1>");}.call(this,"title" in locals_for_with?locals_for_with.title:typeof title!=="undefined"?title:undefined));;return buf.join("");') > -1
+      , 'compile correctly'
+    )
   })
 })
 
 test('partialify', function (t) {
-  t.plan(1)
+  t.plan(2)
 
   js(prefix + 'partialify-entry.js', function (err, src) {
-    t.equal(read('partialify-bundle.js'), src)
+    t.error(err, 'does not error')
+    t.equal(src, read('partialify-bundle.js'), 'compiles correctly')
   })
 })
 
 test('partialify-custom', function (t) {
-  t.plan(1)
+  t.plan(2)
 
   js({
     entry: prefix + 'partialify-entry-custom.js'
@@ -55,14 +64,16 @@ test('partialify-custom', function (t) {
       ['partialify', {'alsoAllow': 'xml'}]
     ]
   }, function (err, src) {
-    t.equal(read('partialify-bundle-custom.js'), src)
+    t.error(err, 'does not error')
+    t.equal(src, read('partialify-bundle-custom.js'), 'compiles correctly')
   })
 })
 
 test('brfs', function (t) {
-  t.plan(1)
+  t.plan(2)
 
   js(prefix + 'brfs-entry.js', function (err, src) {
-    t.equal(read('brfs-bundle.js'), src)
+    t.error(err, 'does not error')
+    t.equal(src, read('brfs-bundle.js'), 'compiles correctly')
   })
 })

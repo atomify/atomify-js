@@ -3,7 +3,7 @@ var test = require('tape')
   , fs = require('fs')
   , prefix = __dirname + '/fixtures/assets/'
   , read = function (file) {
-    return fs.readFileSync(prefix + file, 'utf8')
+    return fs.readFileSync(prefix + file, 'utf8').replace(/[\n]$/, '')
   }
 
 test('opts.assets', function (t) {
@@ -16,7 +16,7 @@ test('opts.assets', function (t) {
       , prefix: 'img/'
     }
   }, function (err, src) {
-    t.equal(read('output/bundle.js'), src)
-    t.ok(fs.existsSync(prefix + '/output/img/logo-4314d804f81c8510.png'), 'file exists')
+    t.equal(src, read('output/bundle.js'))
+    t.ok(fs.existsSync(prefix + '/output/img/4314d804f81c8510.png'), 'file exists')
   })
 })
