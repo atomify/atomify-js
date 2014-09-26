@@ -5,3 +5,5 @@ test
 .npmignore
 .travis.yml
 npm-debug.log
+
+.jshint*
