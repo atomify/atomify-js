@@ -15,7 +15,8 @@ atomify-js is a tool that makes it easy to create small, atomic modules of clien
  * [hbsfy](https://github.com/epeli/node-hbsfy) - Provides support for [Handlebars](http://handlebarsjs.com/) templates
  * [jadeify](https://github.com/domenic/jadeify) - Provides support for [Jade](http://jade-lang.com/) templates
  * [partialify](https://github.com/bclinkinbeard/partialify) - Useful for templating with regular HTML files e.g. [Angular](http://angularjs.org/)
- * [brfs](https://github.com/substack/brfs) - fs.readFileSync() static asset inliner
+ * [brfs](https://github.com/substack/brfs) - `fs.readFileSync()` static asset inliner
+ * [reactify](https://github.com/andreypopp/reactify) [React's JSX](https://facebook.github.io/react/) support, with limited es6 functionality in `.jsx` files.
 
 ## API
 

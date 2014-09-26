@@ -9,6 +9,7 @@ var browserify = require('browserify')
   , jadeify    = require('jadeify')
   , envify     = require('envify')
   , partialify = require('partialify')
+  , reactify   = require('reactify')
   , brfs       = require('brfs')
   , writer     = require('write-to-path')
   , emitter    = new events.EventEmitter()
@@ -75,7 +76,7 @@ var ctor = module.exports = function (opts, cb) {
   }
 
   // ensure brfs runs last because it requires valid js
-  var transforms = [envify, ejsify, hbsfy, jadeify, partialify].concat(opts._transforms).concat([brfs])
+  var transforms = [envify, ejsify, hbsfy, jadeify, partialify, [reactify, {'es6': true}]].concat(opts._transforms).concat([brfs])
   transforms.forEach(function (transform) {
     if (Array.isArray(transform)) {
       b.transform(transform[1], transform[0])
