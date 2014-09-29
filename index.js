@@ -13,8 +13,9 @@ var browserify = require('browserify')
   , brfs       = require('brfs')
   , writer     = require('write-to-path')
   , emitter    = new events.EventEmitter()
+  , ctor
 
-var ctor = module.exports = function (opts, cb) {
+ctor = module.exports = function atomifyJs(opts, cb){
   if (Array.isArray(opts)) opts = {entries: opts}
   if (typeof opts === 'string') opts = {entries: [opts]}
   if (opts.entry) opts.entries = [opts.entry]
@@ -33,12 +34,13 @@ var ctor = module.exports = function (opts, cb) {
     // we might need to call a callback also
     if (typeof cb === 'function') {
       var _cb = cb
-      cb = function (err, src) {
+      cb = function callback(err, src){
         if (err) return _cb(err)
         writeFile(null, src)
         _cb(null, src)
       }
-    } else {
+    }
+    else {
       cb = writeFile
     }
   }
@@ -48,15 +50,15 @@ var ctor = module.exports = function (opts, cb) {
   var b = opts.watch ? watchify() : browserify()
 
   if (opts.watch) {
-    b.on('update', function (ids) {
-      ids.forEach(function (id) {
+    b.on('update', function onUpdate(ids){
+      ids.forEach(function eachId(id){
         emitter.emit('changed', id)
       })
 
       b.bundle(opts, cb)
     })
 
-    b.on('time', function (time) {
+    b.on('time', function onTime(time){
       emitter.emit('bundle', time)
     })
   }
@@ -65,7 +67,7 @@ var ctor = module.exports = function (opts, cb) {
     emitter.emit('package', pkg)
   })
 
-  opts.entries.forEach(function (entry) {
+  opts.entries.forEach(function eachEntry(entry){
     b.add(path.resolve(process.cwd(), entry))
   })
 
@@ -75,12 +77,22 @@ var ctor = module.exports = function (opts, cb) {
     opts._transforms = opts.transforms ? opts.transforms.slice(0) : []
   }
 
-  // ensure brfs runs last because it requires valid js
-  var transforms = [envify, ejsify, hbsfy, jadeify, partialify, [reactify, {'es6': true}]].concat(opts._transforms).concat([brfs])
-  transforms.forEach(function (transform) {
+  var transforms = [
+      envify
+      , ejsify
+      , hbsfy
+      , jadeify
+      , partialify
+      , [reactify, {'es6': true}]
+    ]
+    // ensure brfs runs last because it requires valid js
+    .concat(opts._transforms, [brfs])
+
+  transforms.forEach(function eachTransform(transform){
     if (Array.isArray(transform)) {
       b.transform(transform[1], transform[0])
-    } else {
+    }
+    else {
       b.transform(transform)
     }
   })
@@ -98,24 +110,25 @@ var ctor = module.exports = function (opts, cb) {
     opts._globalTransforms.push(assets)
   }
 
-  opts._globalTransforms.forEach(function (gt) {
+  opts._globalTransforms.forEach(function eachGlobalTransform(gt){
     if (Array.isArray(gt)) {
       var gto = gt[1]
       gto.global = true
       b.transform(gto, gt[0])
-    } else {
+    }
+    else {
       b.transform({global: true}, gt)
     }
   })
 
   if (opts.require) {
-    if (Array.isArray(opts.require) || typeof opts.require === 'string') {
-      opts.require = { file: opts.require }
+    if (Array.isArray(opts.require) || typeof opts.require === 'string'){
+      opts.require = {file: opts.require}
     }
     b.require(opts.require.file, opts.require.opts)
   }
 
-  if (Array.isArray(opts.external) || typeof opts.external === 'string') {
+  if (Array.isArray(opts.external) || typeof opts.external === 'string'){
     b.external(opts.external)
   }
 
