@@ -132,7 +132,8 @@ ctor = module.exports = function atomifyJs(opts, cb){
     b.external(opts.external)
   }
 
-  return b.bundle(opts, cb)
+
+  return b.bundle(cb)
 }
 
 ctor.emitter = emitter

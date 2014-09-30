@@ -1,22 +1,24 @@
 var test = require('tape')
   , js = require('../')
   , fs = require('fs')
-  , prefix = __dirname + '/fixtures/assets/'
-  , read = function (file) {
-    return fs.readFileSync(prefix + file, 'utf8').replace(/[\n]$/, '')
-  }
+  , path = require('path')
+  , prefix = path.join(__dirname, 'fixtures', 'assets')
 
 test('opts.assets', function (t) {
-  t.plan(2)
+  t.plan(3)
 
   js({
-    entry: prefix + 'entry.js'
+    entry: path.join(prefix, '/entry.js')
     , assets: {
-      dest: prefix + '/output/img'
+      dest: path.join(prefix, 'output', 'img')
       , prefix: 'img/'
     }
   }, function (err, src) {
-    t.equal(src, read('output/bundle.js'))
+    t.error(err)
+    t.ok(
+      src.toString().indexOf('module.exports = \'<img src="img/4314d804f81c8510.png" alt="SpatialKey logo"/>') > -1
+      , 'outputs correctly'
+    )
     t.ok(fs.existsSync(prefix + '/output/img/4314d804f81c8510.png'), 'file exists')
   })
 })
