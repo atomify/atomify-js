@@ -95,6 +95,9 @@ If you simply want your bundle written out to a file, provide the path in this p
 #### opts.debug
 Passed to Browserify to generate source maps if `true`. Also provides additional CLI output, if applicable.
 
+#### opts.minify
+If `true`, minifies source code and sets debug to true. If object, passed as options to [minifyify](https://github.com/ben-ng/minifyify) and sets debug to true. If `false`, no minification.
+
 #### opts.watch
 If `true`, [watchify](https://github.com/substack/watchify) will be used to create a file watcher and speed up subsequent builds.
 
