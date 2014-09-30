@@ -12,6 +12,7 @@ var browserify = require('browserify')
   , reactify   = require('reactify')
   , brfs       = require('brfs')
   , writer     = require('write-to-path')
+  , minifyify  = require('minifyify')
   , emitter    = new events.EventEmitter()
   , ctor
 
@@ -33,11 +34,10 @@ ctor = module.exports = function atomifyJs(opts, cb){
 
     // we might need to call a callback also
     if (typeof cb === 'function') {
-      var _cb = cb
-      cb = function callback(err, src){
-        if (err) return _cb(err)
+      var _outputcb = cb
+      cb = function (err, src, map) {
         writeFile(null, src)
-        _cb(null, src)
+        _outputcb(null, src, map)
       }
     }
     else {
@@ -45,9 +45,24 @@ ctor = module.exports = function atomifyJs(opts, cb){
     }
   }
 
-  opts.debug = opts.debug || false
+  var _buffercb = cb
 
-  var b = opts.watch ? watchify() : browserify()
+  cb = function (err, buff, map) {
+    if(typeof _buffercb == 'function')
+      _buffercb(err, buff, map)
+  }
+
+  opts.debug  = opts.debug || false
+
+  if(opts.minify === true) {
+    opts.minify = {map: false}
+  }
+  // Debug mode must be on to get sourcemaps
+  else if(typeof opts.minify == 'object') {
+    opts.debug = true
+  }
+
+  var b = opts.watch ? watchify() : browserify({debug: opts.debug})
 
   if (opts.watch) {
     b.on('update', function onUpdate(ids){
@@ -120,6 +135,10 @@ ctor = module.exports = function atomifyJs(opts, cb){
       b.transform({global: true}, gt)
     }
   })
+
+  if(typeof opts.minify == 'object') {
+    b.plugin(minifyify, opts.minify)
+  }
 
   if (opts.require) {
     if (Array.isArray(opts.require) || typeof opts.require === 'string'){
