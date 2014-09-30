@@ -9,7 +9,7 @@ test('envify', function (t) {
 
   js(prefix + 'envify-entry.js', function (err, src) {
     t.error(err, 'does not error')
-    t.ok(src.toString().indexOf('node_modules" === \'foo\') {') > -1, 'contains compiled vars')
+    t.ok(src.toString().indexOf('node_modules" === \'foo\')') > -1, 'contains compiled vars')
   })
 })
 
@@ -40,7 +40,7 @@ test('jadeify', function (t) {
     // this is more reliable than checking a whole fixture
     t.ok(
       src.toString().indexOf('buf.push("<h1>" + (jade.escape(null == (jade_interp = title) ? "" : jade_interp)) + "</h1>");}.call(this,"title" in locals_for_with?locals_for_with.title:typeof title!=="undefined"?title:undefined));;return buf.join("");') > -1
-      , 'compile correctly'
+      , 'compiles correctly'
     )
   })
 })
