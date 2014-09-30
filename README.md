@@ -9,7 +9,34 @@ Atomic JavaScript - Reusable front-end modules using Browserify, transforms, and
 
 atomify-js is a tool that makes it easy to create small, atomic modules of client-side code. It provides support for several templating libraries and Browserify transforms out of the box while allowing for ample customization. It also provides several convenience features to make working with Browserify even easier.
 
-### Default transforms and template support
+<!-- MarkdownTOC depth=4 -->
+
+- [Install](#install)
+- [Default transforms and template support](#default-transforms-and-template-support)
+- [API](#api)
+  - [Options](#options)
+    - [opts.entry or opts.entries](#optsentry-or-optsentries)
+    - [opts.common](#optscommon)
+    - [opts.output](#optsoutput)
+    - [opts.debug](#optsdebug)
+    - [opts.watch](#optswatch)
+    - [opts.transforms](#optstransforms)
+    - [opts.globalTransforms](#optsglobaltransforms)
+    - [opts.require](#optsrequire)
+    - [opts.external](#optsexternal)
+    - [opts.assets](#optsassets)
+  - [callback](#callback)
+- [Examples](#examples)
+
+<!-- /MarkdownTOC -->
+
+## Install
+
+```bash
+npm install atomify-js
+```
+
+## Default transforms and template support
  * [envify](https://github.com/hughsk/envify) - Replace Node-style environment variables with plain strings
  * [ejsify](https://github.com/hughsk/ejsify) - Provides support for [EJS](https://github.com/visionmedia/ejs) templates
  * [hbsfy](https://github.com/epeli/node-hbsfy) - Provides support for [Handlebars](http://handlebarsjs.com/) templates
@@ -22,25 +49,69 @@ atomify-js is a tool that makes it easy to create small, atomic modules of clien
 
 In its default form, atomify-js takes an `opts` object and a `callback` function.
 
-### opts
+### Options
 
-**opts.entry** or **opts.entries** - Path or paths that will be provided to Browserify as entry points. For convenience, you may simply provide a string or array of strings in place of the `opts` object, which will be treated as the `entry` or `entries` property, respectively. Paths will be resolved relative to `process.cwd()`.
+#### opts.entry or opts.entries
+Path or paths that will be provided to Browserify as entry points. For convenience, you may simply provide a string or array of strings in place of the `opts` object, which will be treated as the `entry` or `entries` property, respectively. Paths will be resolved relative to `process.cwd()`.
 
-**opts.output** - If you simply want your bundle written out to a file, provide the path in this property. Path will be resolved relative to `process.cwd()`.
+#### opts.common
+If you have multiple entries, you can set this to `true` to enable [factor-bundle](https://github.com/substack/factor-bundle), which will take the common dependencies of all entries and move them to a common bundle. If you use this option, the api changes a little bit.
 
-**opts.debug** - Passed to Browserify to generate source maps if `true`. Also provides additional CLI output, if applicable.
+If using a callback, you're passed an object that with keys of each entry file and values of the compiled JS file. You'll also have a `common` key.
 
-**opts.watch** - If `true`, [watchify](https://github.com/substack/watchify) will be used to create a file watcher and speed up subsequent builds.
+```js
+var js = require('atomify-js')
+  , path = require('path')
 
-**opts.transforms** - Provide your own transforms that will be added to the defaults listed above.
+js({
+  entries [path.join(__dirname, 'entry1.js'), path.join(__dirname, 'entry2.js')]
+  , common: true
+  }, function(err, entries){
+    console.log(entries['entry1'].toString())
+    console.log(entries['entry2'].toString())
+    console.log(entries['common'].toString())
+  })
+```
 
-**opts.globalTransforms** - Browserify global transforms that will process all files used in your application, including those within `node_modules`. You should take great care when defining global transforms as [noted in the Browserify documentation](https://github.com/substack/node-browserify#btransformopts-tr).
+If piping the response, you'll be pipped the common bundle. You'll need to listen to the `'entry'` event to get the compiled entry files.
 
-**opts.require** - Array of files to pass to Browserify's `require` method.
+```js
+var js = require('atomify-js')
+  , path = require('path')
 
-**opts.external** - Array of files to pass to Browserify's `external` method.
+js({
+  entries [path.join(__dirname, 'entry1.js'), path.join(__dirname, 'entry2.js')]
+  , common: true
+}).pipe(commonStream)
 
-**opts.assets** - One of the challenges with writing truly modular code is that your templates often refer to assets that need to be accessible from your final bundle. Configuring this option solves that problem by detecting asset paths in your templates, copying them to a new location, and rewriting the references to them to use the new paths. Paths in the `src` attribute of `img`, `video`, and `audio` tags will be processed according to your configuration.
+js.emitter.on('entry', function(content, bundleName){
+  console.log(bundleName, content.toString())
+})
+```
+
+#### opts.output
+If you simply want your bundle written out to a file, provide the path in this property. Path will be resolved relative to `process.cwd()`.
+
+#### opts.debug
+Passed to Browserify to generate source maps if `true`. Also provides additional CLI output, if applicable.
+
+#### opts.watch
+If `true`, [watchify](https://github.com/substack/watchify) will be used to create a file watcher and speed up subsequent builds.
+
+#### opts.transforms
+Provide your own transforms that will be added to the defaults listed above.
+
+#### opts.globalTransforms
+Browserify global transforms that will process all files used in your application, including those within `node_modules`. You should take great care when defining global transforms as [noted in the Browserify documentation](https://github.com/substack/node-browserify#btransformopts-tr).
+
+#### opts.require
+Array of files to pass to Browserify's `require` method.
+
+#### opts.external
+Array of files to pass to Browserify's `external` method.
+
+#### opts.assets
+One of the challenges with writing truly modular code is that your templates often refer to assets that need to be accessible from your final bundle. Configuring this option solves that problem by detecting asset paths in your templates, copying them to a new location, and rewriting the references to them to use the new paths. Paths in the `src` attribute of `img`, `video`, and `audio` tags will be processed according to your configuration.
 
 The processing is configured using two sub-properties of opts.assets: `dest` and `prefix`. The `dest` field determines the location files will be copied to, relative to `process.cwd()`, and `prefix` specifies what will be prepended to the new file names in the rewritten `src` attributes. The filenames are generated from a hash of the assets themselves, so you don't have to worry about name collisions.
 
@@ -109,8 +180,3 @@ var js = require('atomify-js')
 js('./entry.js', './bundle.js')
 ```
 
-## Install
-
-```bash
-npm install atomify-js
-```
