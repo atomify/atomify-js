@@ -1,3 +1,4 @@
 node_modules
 .idea
 test/fixtures/assets/output/*
+test/fixtures/output/*
