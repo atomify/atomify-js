@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0
+* upgraded to browserify v5
+  * **breaking change!** the callback now passes a buffer, not a string. Use `.toString()`
+
 ## 2.4.0
 * all tests now pass
 * add travis
