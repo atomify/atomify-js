@@ -1,0 +1,11 @@
+{
+  "name": "fixtures",
+  "version": "0.0.0",
+  "description": "fixtures package.json",
+  "main": "entry.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Joey Baker <joey@byjoeybaker.com> (https://byjoeybaker.com/)",
+  "license": "Artistic-2.0"
+}

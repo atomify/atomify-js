@@ -1,41 +1,62 @@
 var test = require('tape')
   , js = require('../')
-  , fs = require('fs')
-  , prefix = __dirname + '/fixtures/entry/'
-  , read = function (file) {
-    return fs.readFileSync(prefix + file, 'utf8')
-  }
+  , path = require('path')
+  , prefix = path.join(__dirname, 'fixtures', 'entry')
 
 test('single entry string', function (t) {
-  t.plan(1)
+  t.plan(2)
 
-  js(prefix + 'entry-1.js', function (err, src) {
-    t.equal(read('bundle-single-entry.js'), src)
+  js(path.join(prefix, '/entry-1.js'), function (err, src) {
+    t.error(err, 'should not error')
+    t.ok(
+      src.toString().indexOf('module.exports = \'I am dep 1\'') > -1
+      , 'contains the dep'
+    )
   })
 })
 
 test('opts.entry', function (t) {
-  t.plan(1)
+  t.plan(2)
 
-  js({entry: prefix + 'entry-1.js'}, function (err, src) {
-    t.equal(read('bundle-single-entry.js'), src)
+  js({entry: path.join(prefix, '/entry-1.js')}, function (err, src) {
+    t.error(err, 'should not error')
+    t.ok(
+      src.toString().indexOf('module.exports = \'I am dep 1\'') > -1
+      , 'contains the dep'
+    )
   })
 })
 
 test('entry strings array', function (t) {
-  t.plan(1)
+  t.plan(3)
 
-  js([prefix + 'entry-1.js', prefix + 'entry-2.js'], function (err, src) {
-    t.equal(read('bundle-multiple-entries.js'), src)
+  js([path.join(prefix, '/entry-1.js'), path.join(prefix, '/entry-2.js')], function (err, src) {
+    t.error(err, 'should not error')
+    t.ok(
+      src.toString().indexOf('module.exports = \'I am dep 1\'') > -1
+      , 'contains the dep'
+    )
+    t.ok(
+      src.toString().indexOf('module.exports = \'I am dep 2\'') > -1
+      , 'contains the second dep'
+    )
   })
 })
 
 test('opts.entries', function (t) {
-  t.plan(1)
+  t.plan(3)
 
   js({
-    entries: [prefix + 'entry-1.js', prefix + 'entry-2.js']
+    entries: [path.join(prefix, '/entry-1.js'), path.join(prefix, '/entry-2.js')]
   }, function (err, src) {
-    t.equal(read('bundle-multiple-entries.js'), src)
+    t.error(err, 'should not error')
+    t.ok(
+      src.toString().indexOf('module.exports = \'I am dep 1\'') > -1
+      , 'contains the dep'
+    )
+    t.ok(
+      src.toString().indexOf('module.exports = \'I am dep 2\'') > -1
+      , 'contains the second dep'
+    )
   })
 })
