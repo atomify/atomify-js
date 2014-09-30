@@ -1,20 +1,25 @@
-var browserify = require('browserify')
-  , path       = require('path')
-  , fs         = require('fs')
-  , events     = require('events')
-  , mkdirp     = require('mkdirp')
-  , watchify   = require('watchify')
-  , ejsify     = require('ejsify')
-  , hbsfy      = require('hbsfy')
-  , jadeify    = require('jadeify')
-  , envify     = require('envify')
-  , partialify = require('partialify')
-  , reactify   = require('reactify')
-  , brfs       = require('brfs')
-  , writer     = require('write-to-path')
+var browserify   = require('browserify')
+  , path         = require('path')
+  , fs           = require('fs')
+  , events       = require('events')
+  , mkdirp       = require('mkdirp')
+  , watchify     = require('watchify')
+  , ejsify       = require('ejsify')
+  , hbsfy        = require('hbsfy')
+  , jadeify      = require('jadeify')
+  , envify       = require('envify')
+  , partialify   = require('partialify')
+  , reactify     = require('reactify')
+  , brfs         = require('brfs')
+  , writer       = require('write-to-path')
+  , emitter      = new events.EventEmitter()
+  , streamBuffer = require('stream-buffers')
+  , _            = require('lodash')
   , minifyify  = require('minifyify')
   , emitter    = new events.EventEmitter()
   , ctor
+
+require('factor-bundle')
 
 ctor = module.exports = function atomifyJs(opts, cb){
   if (Array.isArray(opts)) opts = {entries: opts}
@@ -151,8 +156,57 @@ ctor = module.exports = function atomifyJs(opts, cb){
     b.external(opts.external)
   }
 
+  // if we've got the common option, we want to use factor bundle
+  if (opts.common === true){
+    if (opts.entries.length < 2) {
+      var error = new Error('the `common` option requires an `entries` option with more than one entry')
+      cb(error)
+      // TODO: we should do this, but it casues tape to falsely see the error event on itself!?
+      // emitter.emit('error', error)
+      return
+    }
 
-  return b.bundle(cb)
+    // for each entry, we're going to create a stream-able buffer to put the factored bundle into
+    var outputs = {}
+    opts.entries.forEach(function createOutputs(entry){
+      outputs[path.basename(entry).replace(path.extname(entry), '')] = new streamBuffer.WritableStreamBuffer({
+          // these values are arbitrary, but we don't want to require huge buffers
+          initialSize: (1 * 1024)         // start as 1 kilobytes.
+          , incrementAmount: (1 * 1024)    // grow by 1 kilobytes each time buffer overflows.
+      })
+    })
+
+    // setup factor bundle, pass in our streamable-buffers as the output source
+    b.plugin('factor-bundle', {
+      o: _.values(outputs)
+    })
+
+    // we need to wrap the callback to output an object with all the bundles
+    return b.bundle(function (err, common){
+      var hasCallback = _.isFunction(cb)
+        , out = {}
+
+      if (err && hasCallback) return void cb(err)
+
+      // turn the stream-able buffers into plain buffers
+      out = _.mapValues(outputs, function (stream, entryName){
+        var entryBuffer = stream.getContents()
+
+        // for those using the streaming interface, emit an event with the entry
+        // do this here so that we don't have to itterate through the outputs twice
+        emitter.emit('entry', entryBuffer, entryName)
+
+        return entryBuffer
+      })
+
+      // add in the common bundle
+      out.common = common
+
+      if (hasCallback) cb(err, out)
+    })
+  }
+  // if we don't need to use factor bundle, just browserify!
+  else return b.bundle(cb)
 }
 
 ctor.emitter = emitter
