@@ -9,3 +9,7 @@ npm-debug.log
 .jshint*
 
 CHANGELOG.*
+
+.editorconfig
+.jscsrc
+CONTRIBUTING.*
