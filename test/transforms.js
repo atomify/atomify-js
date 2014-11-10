@@ -85,7 +85,7 @@ test('reactify', function (t){
   js(prefix + 'reactify-entry.jsx', function (err, src){
     t.error(err)
     t.ok(
-      src.toString().indexOf('React.DOM.div(null, "hi")') > -1
+      src.toString().indexOf('React.createElement("div", null, "hi")') > -1
       , 'compiles jsx'
     )
 
