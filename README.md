@@ -19,6 +19,7 @@ atomify-js is a tool that makes it easy to create small, atomic modules of clien
     - [opts.common](#optscommon)
     - [opts.output](#optsoutput)
     - [opts.debug](#optsdebug)
+    - [opts.minify](#optsminify)
     - [opts.watch](#optswatch)
     - [opts.transforms](#optstransforms)
     - [opts.globalTransforms](#optsglobaltransforms)
@@ -27,6 +28,7 @@ atomify-js is a tool that makes it easy to create small, atomic modules of clien
     - [opts.assets](#optsassets)
   - [callback](#callback)
 - [Examples](#examples)
+- [Developing](#developing)
 
 <!-- /MarkdownTOC -->
 
@@ -183,3 +185,5 @@ var js = require('atomify-js')
 js('./entry.js', './bundle.js')
 ```
 
+## Developing
+Tests can be run with `npm test`. You can run the tests on every file change with `npm run tdd`.

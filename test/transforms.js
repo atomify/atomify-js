@@ -28,7 +28,7 @@ test('hbsfy', function (t) {
   js(prefix + 'hbsfy-entry.js', function (err, src) {
     t.error(err, 'does not error')
     t.ok(src.toString().indexOf('require("./handlebars/base");') > -1, 'adds handlebars')
-    t.ok(src.toString().indexOf('buffer += "<h1>";') > -1, 'compiles correctly')
+    t.ok(src.toString().indexOf('return "<h1>"\n') > -1, 'compiles correctly')
   })
 })
 
@@ -85,7 +85,7 @@ test('reactify', function (t){
   js(prefix + 'reactify-entry.jsx', function (err, src){
     t.error(err)
     t.ok(
-      src.toString().indexOf('React.DOM.div(null, "hi")') > -1
+      src.toString().indexOf('React.createElement("div", null, "hi")') > -1
       , 'compiles jsx'
     )
 
