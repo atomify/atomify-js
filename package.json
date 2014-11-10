@@ -4,7 +4,8 @@
   "description": "Atomic JavaScript - Reusable front-end modules using Browserify, transforms, and templates",
   "main": "index.js",
   "scripts": {
-    "test": "tape test/*.js | tspec"
+    "test": "tape test/*.js | tspec",
+    "tdd": "nodemon -x npm -i node_modules/ -i test/fixtures/output/ -- test"
   },
   "repository": {
     "type": "git",
@@ -42,6 +43,7 @@
     "write-to-path": "^1.0.0"
   },
   "devDependencies": {
+    "nodemon": "^1.2.1",
     "tap-spec": "^1.0.0",
     "tape": "^3.0.0"
   },
