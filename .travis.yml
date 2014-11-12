@@ -8,3 +8,6 @@ script:
 
 notifications:
   email: false
+
+before_install:
+  - npm install -g npm@latest
