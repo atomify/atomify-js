@@ -40,7 +40,7 @@
     "reactify": "^0.15.2",
     "resrcify": "^1.1.0",
     "stream-buffers": "^1.1.0",
-    "watchify": "^2.1.1",
+    "watchify": "^0.10.2",
     "write-to-path": "^1.0.0"
   },
   "devDependencies": {
