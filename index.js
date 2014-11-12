@@ -16,7 +16,6 @@ var browserify   = require('browserify')
   , streamBuffer = require('stream-buffers')
   , _            = require('lodash')
   , minifyify  = require('minifyify')
-  , emitter    = new events.EventEmitter()
   , ctor
 
 require('factor-bundle')
@@ -67,18 +66,30 @@ ctor = module.exports = function atomifyJs(opts, cb){
     opts.debug = true
   }
 
-  var b = opts.watch ? watchify() : browserify({debug: opts.debug})
+  var browserifyOptions = {debug: true}
+    , b
+    , w
+
+  if (opts.watch) _.extend(browserifyOptions, watchify.args)
+
+  b = browserify(browserifyOptions)
+  emitter.emit('browserify', b)
 
   if (opts.watch) {
-    b.on('update', function onUpdate(ids){
+    w = watchify(b)
+    emitter.emit('watchify', w)
+  }
+
+  if (opts.watch) {
+    w.on('update', function onUpdate(ids){
       ids.forEach(function eachId(id){
         emitter.emit('changed', id)
       })
 
-      b.bundle(opts, cb)
+      w.bundle(cb)
     })
 
-    b.on('time', function onTime(time){
+    w.on('time', function onTime(time){
       emitter.emit('bundle', time)
     })
   }
