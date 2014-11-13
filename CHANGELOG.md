@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.0.1
+* Fixed watchify for updated version. There was a breaking change that sunk by us.
+
 ## 4.0.0
 * upgraded deps to the latest versions
   - reactify is a breaking change b/c react introduced many breaking changes
