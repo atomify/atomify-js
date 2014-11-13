@@ -3,6 +3,8 @@ atomify-js
 
 [![Build Status](https://travis-ci.org/atomify/atomify-js.svg)](https://travis-ci.org/atomify/atomify-js)
 
+[![Dependencies Up-to-date](https://david-dm.org/atomify/atomify-js.png)](https://david-dm.org/atomify/atomify-js)
+
 Atomic JavaScript - Reusable front-end modules using Browserify, transforms, and templates
 
 ## Description
