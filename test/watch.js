@@ -16,6 +16,10 @@ var test = require('tape')
     fs.writeFileSync(changerPath, file)
   }
 
+// watchify is completely broken on linux right now
+// TODO: re-enable watch test on linux when watchify fixes itself https://github.com/substack/watchify/issues/82 https://github.com/substack/watchify/issues/73
+if (process.platform === 'linux') return
+
 test('opts.watch', function(t){
   var callbackCallCount = 0
     , callback
