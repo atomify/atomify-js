@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.0.2
+* Update reactify to 0.16.x
+
 ## 4.0.1
 * Fixed watchify for updated version. There was a breaking change that sunk by us.
 
