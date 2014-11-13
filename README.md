@@ -28,7 +28,14 @@ atomify-js is a tool that makes it easy to create small, atomic modules of clien
     - [opts.require](#optsrequire)
     - [opts.external](#optsexternal)
     - [opts.assets](#optsassets)
-  - [callback](#callback)
+  - [Callback](#callback)
+  - [Events](#events)
+    - [browserify `( bundle)`](#browserify--bundle)
+    - [watchify `( bundle)`](#watchify--bundle)
+    - [changed `( id)`](#changed--id)
+    - [bundle `( time)`](#bundle--time)
+    - [package `( package)`](#package--package)
+    - [entry `( entryBuffer,  entryName)`](#entry--entrybuffer--entryname)
 - [Examples](#examples)
 - [Developing](#developing)
 
@@ -151,9 +158,43 @@ and a copy of logo.png will now exist at `dist/assets/4314d804f81c8510.png`
 
 You may also provide any valid [browserify bundle options](https://github.com/substack/node-browserify#bbundleopts-cb) in the `opts` object as well, and they will be passed directly to Browserify.
 
-### callback
+### Callback
 
 Standard Browserify bundle callback with `cb(err, src)` signature. Not called if `opts.output` is specifed. If `callback` is provided as a string rather than function reference it will be used as the `opts.output` file path.
+
+If `opts.watch` is truthy, the callback will be called on every file change
+
+### Events
+
+The `emitter` property will emit events.
+
+```js
+var js = require('atomify-js')
+
+js('./entry.js', './bundle.js')
+
+js.emitter.on('browserify', function setBrowserifyInstance(b){
+  console.log(b)
+})
+```
+
+#### browserify `(<browserifyInstance> bundle)`
+When the browserify instance is created, emits it. This might be useful to you, but it's really just for testing.
+
+#### watchify `(<watchifyInstance> bundle)`
+When the watchify instance is created, emits it. This might be useful to you, but it's really just for testing.
+
+#### changed `(<String> id)`
+Emitted when watchify detects a file change. Passes the bundle id that changed.
+
+#### bundle `(<Number> time)`
+If `opts.watch` is truthy, this is emitted when the bundle changes. `time` is the re-compilation time.
+
+#### package `(<Object> package)`
+Proxies the package event from browserify.
+
+#### entry `(<Buffer> entryBuffer, <String> entryName)`
+If `opts.common` is truthy, this will be emitted when an entry file is bundled. `entryBundle` is the contents of the entry file in buffer form. `entryName` is the file name of the original entry file.
 
 ## Examples
 
