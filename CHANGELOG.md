@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.0.3
+* Fixes some syntax errors not erroring out on compile
+
 ## 4.0.2
 * Update reactify to 0.16.x
 
