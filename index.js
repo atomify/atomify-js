@@ -40,6 +40,7 @@ ctor = module.exports = function atomifyJs(opts, cb){
     if (typeof cb === 'function') {
       var _outputcb = cb
       cb = function (err, src, map) {
+        if (err) return _outputcb(err)
         writeFile(null, src)
         _outputcb(null, src, map)
       }
