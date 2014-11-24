@@ -3,3 +3,4 @@ node_modules
 test/fixtures/assets/output/*
 test/fixtures/watch/output/*
 *bundle-output*
+.DS_Store
