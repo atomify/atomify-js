@@ -67,7 +67,7 @@ ctor = module.exports = function atomifyJs(opts, cb){
     opts.debug = true
   }
 
-  var browserifyOptions = {debug: true}
+  var browserifyOptions = {debug: opts.debug}
     , b
     , w
 
