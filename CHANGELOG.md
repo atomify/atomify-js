@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.0.4
+* Fix sourcemaps always on
+
 ## 4.0.3
 * Fixes some syntax errors not erroring out on compile
 
