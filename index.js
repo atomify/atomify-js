@@ -67,10 +67,12 @@ ctor = module.exports = function atomifyJs(opts, cb){
     opts.debug = true
   }
 
-  var browserifyOptions = {debug: opts.debug}
+  var browserifyOptions = _.omit(opts, ['entry', 'entries'])
     , b
     , w
 
+  // mixin the required watchify options if we need to watch
+  // these are required for creating the browserify instance
   if (opts.watch) _.extend(browserifyOptions, watchify.args)
 
   b = browserify(browserifyOptions)
