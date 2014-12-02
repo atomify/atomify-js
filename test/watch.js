@@ -66,5 +66,8 @@ test('opts.watch', function(t){
   }
 
   // run the lib with watchify enabled
-  lib({watch: true, entry: path.join(entryPath, 'index.js')}, callback)
+  // wait just a bit to ensure all the file watchers are in place
+  setTimeout(function (){
+    lib({watch: true, entry: path.join(entryPath, 'index.js')}, callback)
+  }, 50)
 })
