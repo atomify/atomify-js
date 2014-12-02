@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.0.5
+* Fixed regression: all options are now passed to browserify (again)
+
 ## 4.0.4
 * Fix sourcemaps always on
 
