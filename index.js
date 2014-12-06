@@ -67,7 +67,7 @@ ctor = module.exports = function atomifyJs(opts, cb){
     opts.debug = true
   }
 
-  var browserifyOptions = _.omit(opts, ['entry', 'entries'])
+  var browserifyOptions = _.omit(opts, ['entry', 'entries', 'require'])
     , b
     , w
 
