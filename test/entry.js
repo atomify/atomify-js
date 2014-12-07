@@ -27,6 +27,19 @@ test('opts.entry', function (t) {
   })
 })
 
+test('opts.require', function (t) {
+  t.plan(2)
+
+  js({require: {file: path.join(prefix, '/entry-1.js'), opts: {expose: 'test'}} }, function (err, src) {
+    t.error(err, 'should not error')
+    t.ok(
+      src.toString().indexOf('module.exports = \'I am dep 1\'') > -1
+      , 'contains the dep'
+    )
+  })
+
+})
+
 test('entry strings array', function (t) {
   t.plan(3)
 
