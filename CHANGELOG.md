@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.0.6
+* Fixed regression: require option works again.
+
 ## 4.0.5
 * Fixed regression: all options are now passed to browserify (again)
 
