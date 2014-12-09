@@ -29,7 +29,7 @@
     "browserify": "^6.2.0",
     "ejsify": "^1.0.0",
     "envify": "^3.2.0",
-    "factor-bundle": "^2.3.1",
+    "factor-bundle": "^2.3.3",
     "handlebars": "^2.0.0",
     "hbsfy": "^2.2.1",
     "jadeify": "^3.1.0",
