@@ -32,7 +32,7 @@
     "factor-bundle": "^2.3.1",
     "handlebars": "^2.0.0",
     "hbsfy": "^2.2.1",
-    "jadeify": "^3.0.0",
+    "jadeify": "^3.1.0",
     "lodash": "^2.4.1",
     "minifyify": "^4.4.0",
     "mkdirp": "^0.5.0",
