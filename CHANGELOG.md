@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.1.0
+* dependency updates: Browserify v7 and reactify v0.17
+
 ## 4.0.6
 * Fixed regression: require option works again.
 
