@@ -13,3 +13,5 @@ CHANGELOG.*
 .editorconfig
 .jscsrc
 CONTRIBUTING.*
+
+.DS_Store
