@@ -61,7 +61,7 @@ test('partialify-custom', function (t) {
   js({
     entry: prefix + 'partialify-entry-custom.js'
     , transforms: [
-      ['partialify', {'alsoAllow': 'xml'}]
+      [require('partialify'), {'alsoAllow': 'xml'}]
     ]
   }, function (err, src) {
     t.error(err, 'does not error')

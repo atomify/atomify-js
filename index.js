@@ -15,7 +15,8 @@ var browserify   = require('browserify')
   , emitter      = new events.EventEmitter()
   , streamBuffer = require('stream-buffers')
   , _            = require('lodash')
-  , minifyify  = require('minifyify')
+  , minifyify    = require('minifyify')
+  , resrcify     = require('resrcify')
   , ctor
 
 require('factor-bundle')
@@ -135,7 +136,7 @@ ctor = module.exports = function atomifyJs(opts, cb){
   opts._globalTransforms = opts.globalTransforms ? opts.globalTransforms.slice(0) : []
 
   if (opts.assets) {
-    var assets = ['resrcify', {
+    var assets = [resrcify, {
       dest: opts.assets.dest || ''
       , prefix: opts.assets.prefix || ''
       , retainName: opts.assets.retainName || ''
@@ -148,10 +149,10 @@ ctor = module.exports = function atomifyJs(opts, cb){
     if (Array.isArray(gt)) {
       var gto = gt[1]
       gto.global = true
-      b.transform(gto, gt[0])
+      b.transform(gt[0], gto)
     }
     else {
-      b.transform({global: true}, gt)
+      b.transform(gt, {global: true})
     }
   })
 
