@@ -11,3 +11,5 @@ notifications:
 
 before_install:
   - npm install -g npm@latest
+
+sudo: false
