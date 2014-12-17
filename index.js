@@ -149,10 +149,10 @@ ctor = module.exports = function atomifyJs(opts, cb){
     if (Array.isArray(gt)) {
       var gto = gt[1]
       gto.global = true
-      b.transform(gto, gt[0])
+      b.transform(gt[0], gto)
     }
     else {
-      b.transform({global: true}, gt)
+      b.transform(gt, {global: true})
     }
   })
 
