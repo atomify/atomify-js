@@ -34,7 +34,7 @@
     "hbsfy": "^2.2.1",
     "jadeify": "^4.0.0",
     "lodash": "^2.4.1",
-    "minifyify": "^5.0.0",
+    "minifyify": "^6.1.0",
     "mkdirp": "^0.5.0",
     "partialify": "^3.1.2",
     "reactify": "^0.17.1",
