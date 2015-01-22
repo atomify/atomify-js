@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.2.0
+* update minifify: now outputs a buffer like it's supposed to
+
 ## 4.1.1
 * Work around for Browserify v7.0.1 change that breaks transforms that are passed as string options instead of functions. See: https://github.com/substack/node-browserify/issues/1032
 * Fixes a bug in global transforms that was a remnant of the Browserify v5 transition.
