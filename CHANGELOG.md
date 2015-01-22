@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.2.0
+## 4.3.0
 * update minifify: now outputs a buffer like it's supposed to
 
 ## 4.1.1
