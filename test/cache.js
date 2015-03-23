@@ -58,8 +58,8 @@ test('opts.cache', function(t){
         )
 
         t.ok(
-          secondTime < initialTime
-          , 'the second compile is faster'
+          secondTime <= initialTime
+          , 'the second of ' + secondTime + ' compiles faster than ' + initialTime
         )
       })
     })
