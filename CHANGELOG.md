@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.0
+* Upgrade dependencies
+* Add: `opts.cache` for much faster incremental builds.
+
 ## 4.4.0
 * Upgrade dependencies: Browserify got a major version bump
 * now testing against node 0.12 & iojs@latest
