@@ -1,4 +1,7 @@
+'use strict'
+
 var browserify   = require('browserify')
+  , browserifyInc = require('browserify-incremental')
   , path         = require('path')
   , fs           = require('fs')
   , events       = require('events')
@@ -26,6 +29,7 @@ ctor = module.exports = function atomifyJs(opts, cb){
   if (typeof opts === 'string') opts = {entries: [opts]}
   if (opts.entry) opts.entries = [opts.entry]
   if (!opts.entries) opts.entries = []
+  if (opts.watch && opts.cache) throw new Error('You can only cache if not using watch')
 
   if (typeof cb === 'string') opts.output = cb // js('entry.js', 'bundle.js')
 
@@ -75,8 +79,17 @@ ctor = module.exports = function atomifyJs(opts, cb){
   // mixin the required watchify options if we need to watch
   // these are required for creating the browserify instance
   if (opts.watch) _.extend(browserifyOptions, watchify.args)
+  // mixin the required browserifyInc options if we need to cache
+  if (opts.cache) _.extend(browserifyOptions, browserifyInc.args)
 
   b = browserify(browserifyOptions)
+
+  if (opts.cache) {
+    b = browserifyInc(b
+      , _.isString(opts.cache) ? {cacheFile: opts.cache} : {}
+    )
+  }
+
   emitter.emit('browserify', b)
 
   if (opts.watch) {
