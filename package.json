@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "tape test/*.js | tspec",
-    "tdd": "nodemon -x npm -i node_modules/ -i test/fixtures/output/ -i test/fixtures/watch/output/* -- test"
+    "tdd": "nodemon -x npm -i node_modules/ -i test/fixtures/output/ -i test/fixtures/watch/output/ -i test/fixtures/cache/output/ -- test"
   },
   "repository": {
     "type": "git",

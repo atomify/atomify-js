@@ -23,6 +23,7 @@ atomify-js is a tool that makes it easy to create small, atomic modules of clien
     - [opts.debug](#optsdebug)
     - [opts.minify](#optsminify)
     - [opts.watch](#optswatch)
+    - [opts.cache](#optscache)
     - [opts.transforms](#optstransforms)
     - [opts.globalTransforms](#optsglobaltransforms)
     - [opts.require](#optsrequire)
@@ -111,6 +112,13 @@ If `true`, minifies source code and sets debug to true. If object, passed as opt
 
 #### opts.watch
 If `true`, [watchify](https://github.com/substack/watchify) will be used to create a file watcher and speed up subsequent builds.
+
+#### opts.cache
+If truthy, will use [browserify-incremental](https://github.com/jsdf/browserify-incremental) to cache the result of a build. This can give you dramatically faster build times if you're not using `opts.watch`.
+
+If `opts.cache` is a string, it will be used as the file path to save the cache file to.
+
+_NOTE_: `opts.cache` and `opts.watch` are incompatible. An error will be thrown if you set both.
 
 #### opts.transforms
 Provide your own transforms that will be added to the defaults listed above.
