@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.5.1
+* revert to browserify v7. See #55
+
 ## 4.5.0
 * Upgrade dependencies
 * Add: `opts.cache` for much faster incremental builds.
