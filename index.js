@@ -125,16 +125,18 @@ ctor = module.exports = function atomifyJs(opts, cb){
     opts._transforms = opts.transforms ? opts.transforms.slice(0) : []
   }
 
-  var transforms = [
+  var transforms = opts.defaultTransforms !== false ?
+    [
       envify
       , ejsify
       , hbsfy
       , jadeify
       , partialify
-      , [reactify, {'es6': true}]
+      , [reactify, {es6: true}]
     ]
     // ensure brfs runs last because it requires valid js
     .concat(opts._transforms, [brfs])
+    : []
 
   transforms.forEach(function eachTransform(transform){
     if (Array.isArray(transform)) {

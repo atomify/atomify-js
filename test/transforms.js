@@ -104,3 +104,12 @@ test('reactify', function (t){
     )
   })
 })
+
+test('opts.defaultTransforms === false', function noDefaultTransforms (t){
+  t.plan(1)
+
+  js({entry: path.join(prefix, 'hbsfy-entry.js'), defaultTransforms: false}, function (err) {
+    t.ok(err.message.indexOf('Unexpected token') > -1, 'errors when requiring a file that requires a default transform')
+  })
+
+})
