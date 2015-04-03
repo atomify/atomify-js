@@ -1,6 +1,5 @@
 test
 
-
 .git*
 .npmignore
 .travis.yml
