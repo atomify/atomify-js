@@ -27,6 +27,7 @@ atomify-js is a tool that makes it easy to create small, atomic modules of clien
     - [opts.watch](#optswatch)
     - [opts.cache](#optscache)
     - [opts.transforms](#optstransforms)
+    - [opts.defaultTransforms](#optsdefaulttransforms)
     - [opts.globalTransforms](#optsglobaltransforms)
     - [opts.require](#optsrequire)
     - [opts.external](#optsexternal)
