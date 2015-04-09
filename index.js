@@ -12,7 +12,7 @@ var browserify   = require('browserify')
   , jadeify      = require('jadeify')
   , envify       = require('envify')
   , partialify   = require('partialify')
-  , reactify     = require('reactify')
+  , babelify     = require('babelify')
   , brfs         = require('brfs')
   , writer       = require('write-to-path')
   , emitter      = new events.EventEmitter()
@@ -132,7 +132,7 @@ ctor = module.exports = function atomifyJs(opts, cb){
       , hbsfy
       , jadeify
       , partialify
-      , [reactify, {es6: true}]
+      , [babelify, {modules: 'common'}]
     ]
     // ensure brfs runs last because it requires valid js
     .concat(opts._transforms, [brfs])

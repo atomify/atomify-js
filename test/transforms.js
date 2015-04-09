@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 var test = require('tape')
   , js = require('../')
@@ -15,7 +15,7 @@ test('envify', function (t) {
     // ensure that the shim is added instead, this is really hacky, and not a
     // good test. TODO: figure out why linux is special
     t.ok(
-      src.toString().indexOf('node_modules" === \'foo\')') > -1
+      src.toString().indexOf('node_modules\' === \'foo\')') > -1
       || src.toString().indexOf('// shim for using process in browser') > -1
       , 'contains compiled vars or the process shim'
     )
@@ -88,18 +88,18 @@ test('brfs', function (t) {
   })
 })
 
-test('reactify', function (t){
+test('babelify', function (t){
   t.plan(3)
 
-  js(path.join(prefix, 'reactify-entry.jsx'), function (err, src){
+  js(path.join(prefix, 'babelify-entry.jsx'), function (err, src){
     t.error(err)
     t.ok(
-      src.toString().indexOf('React.createElement("div", null, "hi")') > -1
+      src.toString().indexOf('React.createElement(') > -1
       , 'compiles jsx'
     )
 
     t.ok(
-      src.toString().indexOf('render:function(){') > -1
+      src.toString().indexOf('var a') > -1
       , 'compiles es6'
     )
   })
