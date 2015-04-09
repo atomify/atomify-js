@@ -27,6 +27,7 @@ atomify-js is a tool that makes it easy to create small, atomic modules of clien
     - [opts.watch](#optswatch)
     - [opts.cache](#optscache)
     - [opts.transforms](#optstransforms)
+    - [opts.defaultTransforms](#optsdefaulttransforms)
     - [opts.globalTransforms](#optsglobaltransforms)
     - [opts.require](#optsrequire)
     - [opts.external](#optsexternal)
@@ -124,6 +125,9 @@ _NOTE_: `opts.cache` and `opts.watch` are incompatible. An error will be thrown 
 
 #### opts.transforms
 Provide your own transforms that will be added to the defaults listed above.
+
+#### opts.defaultTransforms
+If set to `false`, the default list of transforms will not be run. This is useful if you'd like to customize a default transform, or simply don't need them to run.
 
 #### opts.globalTransforms
 Browserify global transforms that will process all files used in your application, including those within `node_modules`. You should take great care when defining global transforms as [noted in the Browserify documentation](https://github.com/substack/node-browserify#btransformopts-tr).
