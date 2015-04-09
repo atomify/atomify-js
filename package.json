@@ -5,7 +5,17 @@
   "main": "index.js",
   "scripts": {
     "test": "tape test/*.js | tspec",
-    "tdd": "nodemon -x npm -i node_modules/ -i test/fixtures/output/ -i test/fixtures/watch/output/ -i test/fixtures/cache/output/ -- test"
+    "tdd": "nodemon -x npm -i node_modules/ -i test/fixtures/output/ -i test/fixtures/watch/output/ -i test/fixtures/cache/output/ -- test",
+    "dmn": "dmn gen -f . && if [[ $(git diff --shortstat 2> /dev/null | tail -n1) != '' ]]; then git add .npmignore && git commit --no-verify -m'update npmignore'; fi",
+    "doctoc": "doctoc README.md --maxlevel 4 && if [ -f CONTRIBUTING.md ]; then doctoc CONTRIBUTING.md --maxlevel 3; fi && if [[ $(git diff --shortstat 2> /dev/null | tail -n1) != '' ]]; then git add README.md; if [ -f CONTRIBUTING.md ]; then git add CONTRIBUTING.md; fi; git commit --no-verify -m'table of contents update'; fi"
+  },
+  "config": {
+    "notes": "important to correct the path of npm so that the git hook doesn't error",
+    "ghooks": {
+      "pre-commit": "PATH=$PATH:/usr/local/bin:/usr/local/sbin",
+      "pre-push": "PATH=$PATH:/usr/local/bin:/usr/local/sbin && npm run dmn && npm run doctoc && npm test",
+      "update": "PATH=$PATH:/usr/local/bin:/usr/local/sbin && npm install"
+    }
   },
   "repository": {
     "type": "git",
@@ -46,6 +56,9 @@
     "write-to-path": "^1.0.0"
   },
   "devDependencies": {
+    "dmn": "^1.0.10",
+    "doctoc": "^0.12.0",
+    "ghooks": "^0.3.0",
     "nodemon": "^1.2.1",
     "tap-spec": "^1.0.0",
     "tape": "^3.0.0"

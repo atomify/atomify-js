@@ -11,7 +11,9 @@ Atomic JavaScript - Reusable front-end modules using Browserify, transforms, and
 
 atomify-js is a tool that makes it easy to create small, atomic modules of client-side code. It provides support for several templating libraries and Browserify transforms out of the box while allowing for ample customization. It also provides several convenience features to make working with Browserify even easier.
 
-<!-- MarkdownTOC depth=4 -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Install](#install)
 - [Default transforms and template support](#default-transforms-and-template-support)
@@ -31,16 +33,16 @@ atomify-js is a tool that makes it easy to create small, atomic modules of clien
     - [opts.assets](#optsassets)
   - [Callback](#callback)
   - [Events](#events)
-    - [browserify `( bundle)`](#browserify--bundle)
-    - [watchify `( bundle)`](#watchify--bundle)
-    - [changed `( id)`](#changed--id)
-    - [bundle `( time)`](#bundle--time)
-    - [package `( package)`](#package--package)
-    - [entry `( entryBuffer,  entryName)`](#entry--entrybuffer--entryname)
+    - [browserify `(<browserifyInstance> bundle)`](#browserify-browserifyinstance-bundle)
+    - [watchify `(<watchifyInstance> bundle)`](#watchify-watchifyinstance-bundle)
+    - [changed `(<String> id)`](#changed-string-id)
+    - [bundle `(<Number> time)`](#bundle-number-time)
+    - [package `(<Object> package)`](#package-object-package)
+    - [entry `(<Buffer> entryBuffer, <String> entryName)`](#entry-buffer-entrybuffer-string-entryname)
 - [Examples](#examples)
 - [Developing](#developing)
 
-<!-- /MarkdownTOC -->
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Install
 

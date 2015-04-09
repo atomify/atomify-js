@@ -1,3 +1,18 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [How to Contribute](#how-to-contribute)
+  - [Creating issues](#creating-issues)
+    - [Bug Issues](#bug-issues)
+    - [Feature Issues](#feature-issues)
+    - [Assignees](#assignees)
+    - [Milestones](#milestones)
+    - [Labels](#labels)
+  - [Developing](#developing)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # How to Contribute
 
 We're open source! We love contributions! An ordered list of helpful things:
