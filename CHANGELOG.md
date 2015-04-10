@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.6.0
+* remove reactify and replace it with babelify
+* add `opts.defaultTransforms` to disable the builtin transforms
+
 ## 4.5.1
 * revert to browserify v7. See #55
 
