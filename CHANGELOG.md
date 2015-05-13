@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.7.0
+* add: Setting default watchify delay to 0
+* fix: transforms not getting passed in
+* internal: replace jshint and jscs with eslint
+
 ## 4.6.0
 * remove reactify and replace it with babelify
 * add `opts.defaultTransforms` to disable the builtin transforms
