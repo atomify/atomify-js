@@ -146,7 +146,7 @@ ctor = module.exports = function atomifyJs (opts, cb){
     ]
     // ensure brfs runs last because it requires valid js
     .concat(opts._transforms, [brfs])
-    : []
+    : opts._transforms || []
 
   transforms.forEach(function eachTransform (transform){
     if (Array.isArray(transform)) {
