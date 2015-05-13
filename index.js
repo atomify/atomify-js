@@ -88,7 +88,9 @@ ctor = module.exports = function atomifyJs (opts, cb){
 
   // mixin the required watchify options if we need to watch
   // these are required for creating the browserify instance
-  if (opts.watch) _.extend(browserifyOptions, watchify.args)
+  // remove the default 600ms delay because speed is tood
+  // ignoreWatch to true to ignore node_modules
+  if (opts.watch) _.extend({delay: 0, ignoreWatch: true}, browserifyOptions, watchify.args)
   // mixin the required browserifyInc options if we need to cache
   if (opts.cache) _.extend(browserifyOptions, browserifyInc.args)
 
