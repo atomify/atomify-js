@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.7.1
+* internal: linter cleanup
+
 ## 4.7.0
 * add: Setting default watchify delay to 0
 * fix: transforms not getting passed in
