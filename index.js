@@ -24,7 +24,7 @@ var browserify = require('browserify')
 
 require('factor-bundle')
 
-ctor = module.exports = function atomifyJs (opts, cb){
+ctor = module.exports = function atomifyJs (opts, cb) {
   var outputPath
     , outputDir
     , writeFile
@@ -110,24 +110,24 @@ ctor = module.exports = function atomifyJs (opts, cb){
   }
 
   if (opts.watch) {
-    w.on('update', function onUpdate (ids){
-      ids.forEach(function eachId (id){
+    w.on('update', function onUpdate (ids) {
+      ids.forEach(function eachId (id) {
         emitter.emit('changed', id)
       })
 
       w.bundle(cb)
     })
 
-    w.on('time', function onTime (time){
+    w.on('time', function onTime (time) {
       emitter.emit('bundle', time)
     })
   }
 
-  b.on('package', function onBrowserifyPackage (pkg){
+  b.on('package', function onBrowserifyPackage (pkg) {
     emitter.emit('package', pkg)
   })
 
-  opts.entries.forEach(function eachEntry (entry){
+  opts.entries.forEach(function eachEntry (entry) {
     b.add(path.resolve(process.cwd(), entry))
   })
 
@@ -150,7 +150,7 @@ ctor = module.exports = function atomifyJs (opts, cb){
     .concat(opts._transforms, [brfs])
     : opts._transforms || []
 
-  transforms.forEach(function eachTransform (transform){
+  transforms.forEach(function eachTransform (transform) {
     if (Array.isArray(transform)) {
       b.transform(transform[1], transform[0])
     }
@@ -172,7 +172,7 @@ ctor = module.exports = function atomifyJs (opts, cb){
     opts._globalTransforms.push(assets)
   }
 
-  opts._globalTransforms.forEach(function eachGlobalTransform (transform){
+  opts._globalTransforms.forEach(function eachGlobalTransform (transform) {
     var transformOptions
 
     if (Array.isArray(transform)) {
@@ -210,13 +210,13 @@ ctor = module.exports = function atomifyJs (opts, cb){
 
     // for each entry, we're going to create a stream-able buffer to put the factored bundle into
     outputs = {}
-    opts.entries.forEach(function createOutputs (entry){
+    opts.entries.forEach(function createOutputs (entry) {
       outputs[path.basename(entry).replace(path.extname(entry), '')] = new streamBuffer.WritableStreamBuffer({
-          // these values are arbitrary, but we don't want to require huge buffers
-          // start as 1 kilobytes.
-          initialSize: 1 * 1024
-          // grow by 1 kilobytes each time buffer overflows.
-          , incrementAmount: 1 * 1024
+        // these values are arbitrary, but we don't want to require huge buffers
+        // start as 1 kilobytes.
+        initialSize: 1 * 1024
+        // grow by 1 kilobytes each time buffer overflows.
+        , incrementAmount: 1 * 1024
       })
     })
 
@@ -226,14 +226,14 @@ ctor = module.exports = function atomifyJs (opts, cb){
     })
 
     // we need to wrap the callback to output an object with all the bundles
-    return b.bundle(function bundledWithCommon (err, common){
+    return b.bundle(function bundledWithCommon (err, common) {
       var hasCallback = _.isFunction(cb)
         , out = {}
 
       if (err && hasCallback) return void cb(err)
 
       // turn the stream-able buffers into plain buffers
-      out = _.mapValues(outputs, function convertStreamToBuffer (stream, entryName){
+      out = _.mapValues(outputs, function convertStreamToBuffer (stream, entryName) {
         var entryBuffer = stream.getContents()
 
         // for those using the streaming interface, emit an event with the entry
