@@ -20,9 +20,8 @@ var browserify = require('browserify')
   , _ = require('lodash')
   , minifyify = require('minifyify')
   , resrcify = require('resrcify')
+  , factorBundle = require('factor-bundle')
   , ctor
-
-require('factor-bundle')
 
 ctor = module.exports = function atomifyJs (opts, cb) {
   var outputPath
@@ -221,7 +220,7 @@ ctor = module.exports = function atomifyJs (opts, cb) {
     })
 
     // setup factor bundle, pass in our streamable-buffers as the output source
-    b.plugin('factor-bundle', {
+    b.plugin(factorBundle, {
       o: _.values(outputs)
     })
 
