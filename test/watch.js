@@ -44,8 +44,11 @@ test('opts.watch', function (t) {
         , 'contains the watched dep on inital callback'
       )
 
-      // commit a change to the file so that we trigger the callback again
-      fs.writeFile(changerPath, changerContents2)
+      // wait for a bit to write the file because watchify has a delay
+      setTimeout(function () {
+        // commit a change to the file so that we trigger the callback again
+        fs.writeFile(changerPath, changerContents2)
+      }, 600)
     }
     else {
       // close all file handlers ← important so that tests exit
