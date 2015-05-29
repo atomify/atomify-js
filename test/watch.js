@@ -48,7 +48,7 @@ test('opts.watch', function (t) {
       setTimeout(function () {
         // commit a change to the file so that we trigger the callback again
         fs.writeFile(changerPath, changerContents2)
-      }, 600)
+      }, 800)
     }
     else {
       // close all file handlers ← important so that tests exit
