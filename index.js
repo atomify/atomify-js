@@ -208,20 +208,20 @@ ctor = module.exports = function atomifyJs (opts, cb) {
     }
 
     // for each entry, we're going to create a stream-able buffer to put the factored bundle into
-    outputs = {}
+    outputs = []
     opts.entries.forEach(function createOutputs (entry) {
-      outputs[path.basename(entry).replace(path.extname(entry), '')] = new streamBuffer.WritableStreamBuffer({
+      outputs.push(new streamBuffer.WritableStreamBuffer({
         // these values are arbitrary, but we don't want to require huge buffers
         // start as 1 kilobytes.
         initialSize: 1 * 1024
         // grow by 1 kilobytes each time buffer overflows.
         , incrementAmount: 1 * 1024
-      })
+      }))
     })
 
     // setup factor bundle, pass in our streamable-buffers as the output source
     b.plugin(factorBundle, {
-      o: _.values(outputs)
+      o: outputs
     })
 
     // we need to wrap the callback to output an object with all the bundles
@@ -232,15 +232,17 @@ ctor = module.exports = function atomifyJs (opts, cb) {
       if (err && hasCallback) return void cb(err)
 
       // turn the stream-able buffers into plain buffers
-      out = _.mapValues(outputs, function convertStreamToBuffer (stream, entryName) {
+      out = opts.entries.reduce(function(acc, entryName, ix) {
+        var stream = outputs[ix]
         var entryBuffer = stream.getContents()
 
         // for those using the streaming interface, emit an event with the entry
         // do this here so that we don't have to itterate through the outputs twice
         emitter.emit('entry', entryBuffer, entryName)
 
-        return entryBuffer
-      })
+        acc[path.basename(entryName).replace(path.extname(entryName), '')] = entryBuffer
+        return acc
+      }, {})
 
       // add in the common bundle
       out.common = common
