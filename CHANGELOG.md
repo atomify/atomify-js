@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.7.2
+* fix: directly require factor-bundle. #61
+* internal: fix watch test not finishing
+
 ## 4.7.1
 * internal: linter cleanup
 
