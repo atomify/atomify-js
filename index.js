@@ -34,6 +34,7 @@ ctor = module.exports = function atomifyJs (opts, cb) {
     , assets
     , outputs
     , b
+    , userStreams
 
   if (Array.isArray(opts)) opts = {entries: opts}
   if (typeof opts === 'string') opts = {entries: [opts]}
@@ -209,17 +210,28 @@ ctor = module.exports = function atomifyJs (opts, cb) {
       return void cb(new Error('the `common` option requires an `entries` option with more than one entry'))
     }
 
-    // for each entry, we're going to create a stream-able buffer to put the factored bundle into
-    outputs = []
-    opts.entries.forEach(function createOutputs (entry) {
-      outputs.push(new streamBuffer.WritableStreamBuffer({
-        // these values are arbitrary, but we don't want to require huge buffers
-        // start as 1 kilobytes.
-        initialSize: 1 * 1024
-        // grow by 1 kilobytes each time buffer overflows.
-        , incrementAmount: 1 * 1024
-      }))
-    })
+    // do some sanity checking on the user-provided streams (if any)
+    // will fallback to our own buffered streams if these checks fail
+    userStreams = opts.streams instanceof Array
+               && opts.streams.length == opts.entries.length
+               && opts.streams.every(function(s) {
+                    return s && typeof s.pipe === 'function'
+                  })
+
+    if (userStreams) outputs = opts.streams;
+    else {
+      // for each entry, we're going to create a stream-able buffer to put the factored bundle into
+      outputs = []
+      opts.entries.forEach(function createOutputs (entry) {
+        outputs.push(new streamBuffer.WritableStreamBuffer({
+          // these values are arbitrary, but we don't want to require huge buffers
+          // start as 1 kilobytes.
+          initialSize: 1 * 1024
+          // grow by 1 kilobytes each time buffer overflows.
+          , incrementAmount: 1 * 1024
+        }))
+      })
+    }
 
     // setup factor bundle, pass in our streamable-buffers as the output source
     b.plugin(factorBundle, {
