@@ -232,15 +232,16 @@ ctor = module.exports = function atomifyJs (opts, cb) {
       if (err && hasCallback) return void cb(err)
 
       // turn the stream-able buffers into plain buffers
-      out = opts.entries.reduce(function(acc, entryName, ix) {
+      out = opts.entries.reduce(function(acc, entry, ix) {
         var stream = outputs[ix]
         var entryBuffer = stream.getContents()
+        var entryName = path.basename(entry).replace(path.extname(entry), '')
 
         // for those using the streaming interface, emit an event with the entry
         // do this here so that we don't have to itterate through the outputs twice
         emitter.emit('entry', entryBuffer, entryName)
 
-        acc[path.basename(entryName).replace(path.extname(entryName), '')] = entryBuffer
+        acc[entryName] = entryBuffer
         return acc
       }, {})
 
