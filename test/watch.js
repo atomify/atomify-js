@@ -9,14 +9,14 @@ var test = require('tape')
   , changerPath = path.join(outputPath, 'changer.js')
   , now = Date.now()
   , mkdirp = require('mkdirp')
-  , setup = function setup(){
+  , setup = function setup () {
     var file = 'module.exports = ' + now
 
     mkdirp.sync(outputPath)
     fs.writeFileSync(changerPath, file)
   }
 
-test('opts.watch', function(t){
+test('opts.watch', function (t) {
   var callbackCallCount = 0
     , callback
     , w
@@ -24,12 +24,12 @@ test('opts.watch', function(t){
   setup()
 
   // get the watchify instance so that we can close it an end the test
-  lib.emitter.once('watchify', function assignWatchify(watchify){
+  lib.emitter.once('watchify', function assignWatchify (watchify) {
     w = watchify
   })
 
   // callback will be called each time the changer file is changed
-  callback = function callback(err, bundle){
+  callback = function callback (err, bundle) {
     var src = bundle.toString()
       , changerContents2 = 'module.exports = changed'
 
@@ -66,7 +66,7 @@ test('opts.watch', function(t){
 
   // run the lib with watchify enabled
   // wait just a bit to ensure all the file watchers are in place
-  setTimeout(function(){
+  setTimeout(function () {
     lib({watch: true, entry: path.join(entryPath, 'index.js')}, callback)
   }, 50)
 })
