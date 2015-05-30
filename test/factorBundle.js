@@ -136,6 +136,72 @@ test('opts.common: pipes the common bundle', function (t){
   })
 })
 
+test('opts.common: streams all bundles', function (t){
+  t.plan(11)
+  
+  var commonStreamBuffer = new streamBuffer.WritableStreamBuffer()
+  var buffers = []
+  var entries = [
+     	path.join(prefix, 'entry-1.js')
+      , path.join(prefix, 'entry-2.js')
+  ]
+      
+  js({
+    entries: entries
+    , common: true
+    , streams: function(entry, index) {
+      t.ok(
+        entries[index] == entry
+        , 'buffer generator called with correct arguments'
+      )
+      return buffers[index] = new streamBuffer.WritableStreamBuffer()
+    }
+  })
+    .on('end', function (){
+      var common = commonStreamBuffer.getContents().toString()
+      // the common dep
+      t.ok(
+        common.indexOf(dep1) < 0
+        , 'common does not contain dep 1'
+      )
+      t.ok(
+        common.indexOf(dep2) < 0
+        , 'common does not contain dep 2'
+      )
+      t.ok(
+        common.indexOf(depCommon) > -1
+        , 'common contains the common dep'
+      )
+      // the first dep
+      t.ok(
+        buffers[0].getContents().toString().indexOf(dep1) > -1
+        , 'entry-1 contains dep 1'
+      )
+      t.ok(
+        buffers[0].getContents().toString().indexOf(dep2) < 0
+        , 'entry-1 does not contain dep 2'
+      )
+      t.ok(
+        buffers[0].getContents().toString().indexOf(depCommon) < 0
+        , 'entry-1 does not contain the common dep'
+      )
+      // the second dep
+      t.ok(
+        buffers[1].getContents().toString().indexOf(dep2) > -1
+        , 'entry-2 contains dep 2'
+      )
+      t.ok(
+        buffers[1].getContents().toString().indexOf(dep1) < 0
+        , 'entry-1 does not contain dep 1'
+      )
+      t.ok(
+        buffers[1].getContents().toString().indexOf(depCommon) < 0
+        , 'entry-2 does not contain the common dep'
+      )
+    })
+    .pipe(commonStreamBuffer)
+})
+
 test('opts.common: passing the common option without entries', function (t){
   t.plan(1)
 

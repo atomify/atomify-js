@@ -32,6 +32,7 @@ atomify-js is a tool that makes it easy to create small, atomic modules of clien
     - [opts.require](#optsrequire)
     - [opts.external](#optsexternal)
     - [opts.assets](#optsassets)
+    - [opts.streams](#optsstreams)
   - [Callback](#callback)
   - [Events](#events)
     - [browserify `(<browserifyInstance> bundle)`](#browserify-browserifyinstance-bundle)
@@ -72,7 +73,7 @@ Path or paths that will be provided to Browserify as entry points. For convenien
 #### opts.common
 If you have multiple entries, you can set this to `true` to enable [factor-bundle](https://github.com/substack/factor-bundle), which will take the common dependencies of all entries and move them to a common bundle. If you use this option, the api changes a little bit.
 
-If using a callback, you're passed an object that with keys of each entry file and values of the compiled JS file. You'll also have a `common` key.
+If a callback is defined, then it will be passed an object whose keys are filenames (stripped of path and file extension) and whose values are the associated compiled JS (as strings).  If [opts.streams](#optsstreams) was valid, then this object will only contain a `common` key; else it will also contain one key for every file in [opts.entries](#optsentries).
 
 ```js
 var js = require('atomify-js')
@@ -88,7 +89,7 @@ js({
   })
 ```
 
-If piping the response, you'll be pipped the common bundle. You'll need to listen to the `'entry'` event to get the compiled entry files.
+If piping the response, only the common bundle is piped out.  If [opts.streams](#optsstreams) was valid, the other compiled bundles will be piped to the generated streams; otherwise you'll need to listen to the `'entry'` event to get the compiled entry files.
 
 ```js
 var js = require('atomify-js')
@@ -171,6 +172,9 @@ becomes
 and a copy of logo.png will now exist at `dist/assets/4314d804f81c8510.png`
 
 You may also provide any valid [browserify bundle options](https://github.com/substack/node-browserify#bbundleopts-cb) in the `opts` object as well, and they will be passed directly to Browserify.
+
+#### opts.streams
+A function that will be called (upon bundling) once per entry file, with two arguments `entry` and `index` (respectively indicating the value and index of the associated element from [opts.entries](#optsentries)); it should return the stream to which the compiled entry bundle should be piped.  Only meaningful if [opts.common](#opts.common) is `true`.
 
 ### Callback
 

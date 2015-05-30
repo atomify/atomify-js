@@ -34,7 +34,7 @@ ctor = module.exports = function atomifyJs (opts, cb) {
     , assets
     , outputs
     , b
-    , w
+    , streamGenerator
 
   if (Array.isArray(opts)) opts = {entries: opts}
   if (typeof opts === 'string') opts = {entries: [opts]}
@@ -104,20 +104,20 @@ ctor = module.exports = function atomifyJs (opts, cb) {
   emitter.emit('browserify', b)
 
   if (opts.watch) {
-    w = watchify(b)
-    emitter.emit('watchify', w)
+    b = watchify(b)
+    emitter.emit('watchify', b)
   }
 
   if (opts.watch) {
-    w.on('update', function onUpdate (ids) {
+    b.on('update', function onUpdate (ids) {
       ids.forEach(function eachId (id) {
         emitter.emit('changed', id)
       })
 
-      w.bundle(cb)
+      rebundle()
     })
 
-    w.on('time', function onTime (time) {
+    b.on('time', function onTime (time) {
       emitter.emit('bundle', time)
     })
   }
@@ -199,7 +199,6 @@ ctor = module.exports = function atomifyJs (opts, cb) {
     b.external(opts.external)
   }
 
-  // if we've got the common option, we want to use factor bundle
   if (opts.common === true){
     if (opts.entries.length < 2) {
       // TODO: we should do this, but it casues tape to falsely see the error event on itself!?
@@ -207,49 +206,76 @@ ctor = module.exports = function atomifyJs (opts, cb) {
       return void cb(new Error('the `common` option requires an `entries` option with more than one entry'))
     }
 
-    // for each entry, we're going to create a stream-able buffer to put the factored bundle into
-    outputs = {}
-    opts.entries.forEach(function createOutputs (entry) {
-      outputs[path.basename(entry).replace(path.extname(entry), '')] = new streamBuffer.WritableStreamBuffer({
-        // these values are arbitrary, but we don't want to require huge buffers
-        // start as 1 kilobytes.
-        initialSize: 1 * 1024
-        // grow by 1 kilobytes each time buffer overflows.
-        , incrementAmount: 1 * 1024
-      })
-    })
-
-    // setup factor bundle, pass in our streamable-buffers as the output source
-    b.plugin(factorBundle, {
-      o: _.values(outputs)
-    })
-
-    // we need to wrap the callback to output an object with all the bundles
-    return b.bundle(function bundledWithCommon (err, common) {
-      var hasCallback = _.isFunction(cb)
-        , out = {}
-
-      if (err && hasCallback) return void cb(err)
-
-      // turn the stream-able buffers into plain buffers
-      out = _.mapValues(outputs, function convertStreamToBuffer (stream, entryName) {
-        var entryBuffer = stream.getContents()
-
-        // for those using the streaming interface, emit an event with the entry
-        // do this here so that we don't have to itterate through the outputs twice
-        emitter.emit('entry', entryBuffer, entryName)
-
-        return entryBuffer
-      })
-
-      // add in the common bundle
-      out.common = common
-
-      if (hasCallback) cb(err, out)
-    })
+    // we need a function to generate streams
+    // users can optionally provide one, else fallback to generating streamable buffers
+    streamGenerator = _.isFunction(opts.streams)
+                    ? opts.streams
+                    : function() {
+                          return new streamBuffer.WritableStreamBuffer({
+                            // these values are arbitrary, but we don't want to require huge buffers
+                            // start as 1 kilobytes.
+                            initialSize: 1 * 1024
+                            // grow by 1 kilobytes each time buffer overflows.
+                            , incrementAmount: 1 * 1024
+                          })
+                      }
   }
-  // if we don't need to use factor bundle, just browserify!
-  else return b.bundle(cb)
+
+  return rebundle()
+
+  function rebundle() {
+    // if we've got the common option, we want to use factor bundle
+    if (opts.common === true){
+      // generate the output streams
+      outputs = opts.entries.reduce(function(acc, entry, ix){
+        var s = streamGenerator(entry, ix)
+
+        // sanity check
+        if (_.isObject(s) && _.isFunction(s.pipe)) {
+          acc.push(s)
+          return acc
+        } else {
+          return void cb(new Error('if provided, the `streams` option must be a function that returns a stream'))
+        }
+      },[])
+
+      // setup factor bundle
+      b.plugin(factorBundle, {
+        // passing in generated streams to receive the output
+	o: outputs
+      })
+
+      // we need to wrap the callback to output an object with all the bundles
+      return b.bundle(function bundledWithCommon (err, common) {
+        var hasCallback = _.isFunction(cb)
+          , out = {}
+
+        if (err && hasCallback) return void cb(err)
+
+        if (!_.isFunction(opts.streams)) {
+          // turn the stream-able buffers into plain buffers
+          out = opts.entries.reduce(function(acc, entry, ix) {
+            var entryBuffer = outputs[ix].getContents()
+              , entryName   = path.basename(entry).replace(path.extname(entry), '')
+  
+            // for those using the streaming interface, emit an event with the entry
+            // do this here so that we don't have to itterate through the outputs twice
+            emitter.emit('entry', entryBuffer, entryName)
+  
+            acc[entryName] = entryBuffer
+            return acc
+          }, {})
+        }
+
+        // add in the common bundle
+        out.common = common
+
+        if (hasCallback) cb(err, out)
+      })
+    }
+    // if we don't need to use factor bundle, just browserify!
+    else return b.bundle(cb)
+  }
 }
 
 ctor.emitter = emitter
