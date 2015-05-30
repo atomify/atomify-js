@@ -137,27 +137,28 @@ test('opts.common: pipes the common bundle', function (t){
 })
 
 test('opts.common: streams all bundles', function (t){
-  t.plan(9)
+  t.plan(11)
   
   var commonStreamBuffer = new streamBuffer.WritableStreamBuffer()
-    , entry1StreamBuffer = new streamBuffer.WritableStreamBuffer()
-    , entry2StreamBuffer = new streamBuffer.WritableStreamBuffer()
+  var buffers = []
+  var entries = [
+     	path.join(prefix, 'entry-1.js')
+      , path.join(prefix, 'entry-2.js')
+  ]
       
   js({
-    entries: [
-      path.join(prefix, 'entry-1.js')
-      , path.join(prefix, 'entry-2.js')
-    ]
+    entries: entries
     , common: true
-    , streams: [
-      entry1StreamBuffer
-      , entry2StreamBuffer
-    ]
+    , streams: function(entry, index) {
+      t.ok(
+        entries[index] == entry
+        , 'buffer generator called with correct arguments'
+      )
+      return buffers[index] = new streamBuffer.WritableStreamBuffer()
+    }
   })
     .on('end', function (){
       var common = commonStreamBuffer.getContents().toString()
-        , entry1 = entry1StreamBuffer.getContents().toString()
-        , entry2 = entry2StreamBuffer.getContents().toString()
       // the common dep
       t.ok(
         common.indexOf(dep1) < 0
@@ -173,28 +174,28 @@ test('opts.common: streams all bundles', function (t){
       )
       // the first dep
       t.ok(
-        entry1.toString().indexOf(dep1) > -1
+        buffers[0].getContents().toString().indexOf(dep1) > -1
         , 'entry-1 contains dep 1'
       )
       t.ok(
-        entry1.toString().indexOf(dep2) < 0
+        buffers[0].getContents().toString().indexOf(dep2) < 0
         , 'entry-1 does not contain dep 2'
       )
       t.ok(
-        entry1.toString().indexOf(depCommon) < 0
+        buffers[0].getContents().toString().indexOf(depCommon) < 0
         , 'entry-1 does not contain the common dep'
       )
       // the second dep
       t.ok(
-        entry2.toString().indexOf(dep2) > -1
+        buffers[1].getContents().toString().indexOf(dep2) > -1
         , 'entry-2 contains dep 2'
       )
       t.ok(
-        entry2.toString().indexOf(dep1) < 0
+        buffers[1].getContents().toString().indexOf(dep1) < 0
         , 'entry-1 does not contain dep 1'
       )
       t.ok(
-        entry2.toString().indexOf(depCommon) < 0
+        buffers[1].getContents().toString().indexOf(depCommon) < 0
         , 'entry-2 does not contain the common dep'
       )
     })

@@ -89,7 +89,7 @@ js({
   })
 ```
 
-If piping the response, only the common bundle is piped out.  If [opts.streams](#optsstreams) was valid, the other compiled bundles will be piped thereto; otherwise you'll need to listen to the `'entry'` event to get the compiled entry files.
+If piping the response, only the common bundle is piped out.  If [opts.streams](#optsstreams) was valid, the other compiled bundles will be piped to the generated streams; otherwise you'll need to listen to the `'entry'` event to get the compiled entry files.
 
 ```js
 var js = require('atomify-js')
@@ -174,7 +174,7 @@ and a copy of logo.png will now exist at `dist/assets/4314d804f81c8510.png`
 You may also provide any valid [browserify bundle options](https://github.com/substack/node-browserify#bbundleopts-cb) in the `opts` object as well, and they will be passed directly to Browserify.
 
 #### opts.streams
-An array of streams to which the compiled entry bundles should be piped (in the same order as [opts.entries](#optsentries) is defined).  Only meaningful if [opts.common](#opts.common) is `true`.  To be valid, this array must be of the same size as [opts.entries](#optsentries) and every element must be a stream; otherwise it will be ignored.
+A function that will be called (upon bundling) once per entry file, with two arguments `entry` and `index` (respectively indicating the value and index of the associated element from [opts.entries](#optsentries)); it should return the stream to which the compiled entry bundle should be piped.  Only meaningful if [opts.common](#opts.common) is `true`.
 
 ### Callback
 
