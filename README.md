@@ -117,7 +117,7 @@ If `true`, minifies source code and sets debug to true. If object, passed as opt
 If `true`, [watchify](https://github.com/substack/watchify) will be used to create a file watcher and speed up subsequent builds.
 
 #### opts.cache
-If truthy, will use [browserify-incremental](https://github.com/jsdf/browserify-incremental) to cache the result of a build. This can give you dramatically faster build times if you're not using `opts.watch`.
+If truthy, will use [rebundler](https://github.com/bjoerge/rebundler) to cache the result of a build. This can give you dramatically faster build times if you're not using `opts.watch`.
 
 If `opts.cache` is a string, it will be used as the file path to save the cache file to.
 
