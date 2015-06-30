@@ -1,9 +1,10 @@
 'use strict'
 
 var browserify = require('browserify')
-  , browserifyInc = require('browserify-incremental')
+  , rebundler = require('rebundler')
   , path = require('path')
   , fs = require('fs')
+  , md5 = require('MD5')
   , events = require('events')
   , mkdirp = require('mkdirp')
   , watchify = require('watchify')
@@ -30,6 +31,8 @@ ctor = module.exports = function atomifyJs (opts, cb) {
     , _outputcb
     , _buffercb
     , browserifyOptions
+    , persistKey
+    , cacheChecker
     , transforms
     , assets
     , outputs
@@ -90,25 +93,33 @@ ctor = module.exports = function atomifyJs (opts, cb) {
   // remove the default 600ms delay because speed is tood
   // ignoreWatch to true to ignore node_modules
   if (opts.watch) _.extend({delay: 0, ignoreWatch: true}, browserifyOptions, watchify.args)
-  // mixin the required browserifyInc options if we need to cache
-  if (opts.cache) _.extend(browserifyOptions, browserifyInc.args)
-
-  b = browserify(browserifyOptions)
 
   if (opts.cache) {
-    b = browserifyInc(b
-      , _.isString(opts.cache) ? {cacheFile: opts.cache} : {}
-    )
-  }
+    persistKey = md5(opts.entry || opts.entries.toString() || opts.require.toString())
 
-  emitter.emit('browserify', b)
+    b = browserify(_.extend(browserifyOptions, {
+      fullPaths: true
+    }))
+    emitter.emit('browserify', b)
+
+    cacheChecker = rebundler({persist: true, persistKey: persistKey, cacheDir: typeof opts.cache === 'string' ? opts.cache : null}, function rebundle (cache, packageCache) {
+      b._mdeps.cache = {
+        deps: cache
+        , pkgs: packageCache
+        , mtimes: b._mdeps.cache.mtimes
+      }
+      return b
+    })
+  }
+  else {
+    b = browserify(browserifyOptions)
+    emitter.emit('browserify', b)
+  }
 
   if (opts.watch) {
     w = watchify(b)
     emitter.emit('watchify', w)
-  }
 
-  if (opts.watch) {
     w.on('update', function onUpdate (ids) {
       ids.forEach(function eachId (id) {
         emitter.emit('changed', id)
@@ -225,7 +236,7 @@ ctor = module.exports = function atomifyJs (opts, cb) {
     })
 
     // we need to wrap the callback to output an object with all the bundles
-    return b.bundle(function bundledWithCommon (err, common) {
+    return (opts.cache ? cacheChecker() : b).bundle(function bundledWithCommon (err, common) {
       var hasCallback = _.isFunction(cb)
         , out = {}
 
@@ -249,7 +260,7 @@ ctor = module.exports = function atomifyJs (opts, cb) {
     })
   }
   // if we don't need to use factor bundle, just browserify!
-  else return b.bundle(cb)
+  else return (opts.cache ? cacheChecker() : b).bundle(cb)
 }
 
 ctor.emitter = emitter

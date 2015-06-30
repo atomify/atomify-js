@@ -8,19 +8,20 @@ var test = require('tape')
   , outputPath = path.join(entryPath, 'output')
   , changerPath = path.join(outputPath, 'changer.js')
   , mkdirp = require('mkdirp')
-  , cachePath = path.join(outputPath, 'cache.json')
-  , setup = function setup(value){
+  , cacheDir = path.join(outputPath, 'cache')
+  , rimraf = require('rimraf')
+  , setup = function setup (value) {
     var file = 'module.exports = ' + value || Date.now()
 
     mkdirp.sync(outputPath)
+    mkdirp.sync(cacheDir)
     fs.writeFileSync(changerPath, file)
   }
 
-test('opts.cache', function(t){
-  var parseTime = function parseTime(logMsg){
-    return parseFloat(logMsg.replace(/.*?\(([0-9\.]{1,}) seconds\)/, '$1'))
-  }
-
+test('opts.cache', function (t) {
+  var startTime = Date.now()
+    , runTests
+    , b
   setup()
 
   t.plan(5)
@@ -30,97 +31,113 @@ test('opts.cache', function(t){
     , 'should throw if opts.watch is also set'
   )
 
-  lib.emitter.once('browserify', function (b){
-    b.once('log', function(msg){
-      var initialTime = parseTime(msg)
+  lib.emitter.once('browserify', function (br) {
+    b = br
+  })
 
-      t.ok(
-        msg
-        , 'compiles once'
-      )
+  runTests = function () {
+    var firstBundleTime = Date.now()
+      , firstBundleDuration = firstBundleTime - startTime
 
-      b.bundle()
-      b.once('log', function(msg2){
-        var secondTime = parseTime(msg2)
+    t.ok(
+      firstBundleDuration
+      , 'compiles once'
+    )
 
+    b.bundle(function () {
+      var secondBundleTime = Date.now()
+        , secondBundleDuration = secondBundleTime - firstBundleTime
+
+      // wait for 1000ms, b/c rebundler does
+      setTimeout(function () {
         // wait for the second callback because some fs are slow. (linux)
         t.ok(
-          fs.existsSync(cachePath)
+          fs.existsSync(cacheDir)
           , 'writes the cache file'
         )
 
         // cleanup
-        fs.unlinkSync(cachePath)
+        rimraf.sync(cacheDir)
+      }, 1050)
 
-        t.ok(
-          msg2
-          , 'compiles a second time'
-        )
+      t.ok(
+        secondBundleDuration
+        , 'compiles a second time'
+      )
 
-        t.ok(
-          secondTime <= initialTime
-          , 'the second of ' + secondTime + ' compiles faster than ' + initialTime
-        )
-      })
+      t.ok(
+        secondBundleDuration <= firstBundleDuration
+        , 'the second bundle time of ' + secondBundleDuration + ' compiles faster than the initial ' + firstBundleDuration
+      )
     })
-  })
+  }
 
-  lib({cache: cachePath, entry: path.join(entryPath, 'index.js')})
+  lib({cache: cacheDir, entry: path.join(entryPath, 'index.js')}, runTests)
 })
 
-test('opts.cache works with opts.common', function(t){
-  var parseTime = function parseTime(logMsg){
-      return parseFloat(logMsg.replace(/.*?\(([0-9\.]{1,}) seconds\)/, '$1'))
-    }
+test('opts.cache works with opts.common', function (t) {
+  var startTime = Date.now()
     , bundleNames = ['common', 'dep-1', 'dep-2', 'index']
+    , runTests
     , b
 
   setup()
 
-  t.plan(6 + bundleNames.length)
+  t.plan(5 + bundleNames.length)
 
   t.throws(
     lib.bind(null, {watch: true, cache: true})
     , 'should throw if opts.watch is also set'
   )
 
-  lib.emitter.once('browserify', function (browserifyInstance){
+  lib.emitter.once('browserify', function (browserifyInstance) {
     b = browserifyInstance
-    b.once('log', function(msg){
-      var initialTime = parseTime(msg)
-
-      t.ok(
-        msg
-        , 'compiles once'
-      )
-
-      b.once('log', function(msg2){
-        var secondTime = parseTime(msg2)
-
-        // wait for the second callback because some fs are slow. (linux)
-        t.ok(
-          fs.existsSync(cachePath)
-          , 'writes the cache file'
-        )
-
-        // cleanup
-        fs.unlinkSync(cachePath)
-
-        t.ok(
-          msg2
-          , 'compiles a second time'
-        )
-
-        t.ok(
-          secondTime <= initialTime
-          , 'the second of ' + secondTime + ' compiles faster than ' + initialTime
-        )
-      })
-    })
   })
 
+  runTests = function (err, bundles) {
+    var bundleKeys = Object.keys(bundles)
+      , firstBundleTime = Date.now()
+      , firstBundleDuration = firstBundleTime - startTime
+
+    t.error(err, 'should not error')
+
+    bundleNames.forEach(function ensureEachBundleExists (bundleName) {
+      t.ok(
+        bundleKeys.indexOf(bundleName) > -1
+        , 'creates the ' + bundleName + ' bundle'
+      )
+    })
+
+    t.ok(
+      firstBundleTime
+      , 'compiles once'
+    )
+
+    // trigger another bundle so that we can time the difference
+    b.bundle(function () {
+      var secondBundleTime = Date.now()
+        , secondBundleDuration = secondBundleTime - firstBundleTime
+
+      // wait for 1000ms, b/c rebundler does
+      setTimeout(function () {
+        // cleanup
+        if (fs.existsSync(cacheDir)) rimraf.sync(cacheDir)
+      }, 1020)
+
+      t.ok(
+        secondBundleDuration
+        , 'compiles a second time'
+      )
+
+      t.ok(
+        secondBundleDuration <= firstBundleDuration
+        , 'the second bundle time of ' + secondBundleDuration + ' compiles faster than the initial ' + firstBundleDuration
+      )
+    })
+  }
+
   lib({
-    cache: cachePath
+    cache: cacheDir
     , entries: [
       path.join(entryPath, 'index.js')
       , path.join(entryPath, '..', 'entry', 'dep-2.js')
@@ -128,19 +145,6 @@ test('opts.cache works with opts.common', function(t){
     ]
     , common: true
     , debug: true
-    }
-  , function(err, bundles){
-    var bundleKeys = Object.keys(bundles)
-    t.error(err, 'should not error')
-
-    bundleNames.forEach(function ensureEachBundleExists(bundleName){
-      t.ok(
-        bundleKeys.indexOf(bundleName) > -1
-        , 'creates the ' + bundleName + ' bundle'
-      )
-    })
-
-    // trigger another bundle so that we can time the difference
-    b.bundle()
-  })
+  }
+  , runTests)
 })
