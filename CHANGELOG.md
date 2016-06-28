@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.7.3
+* upgrade browserify to v13.0.1
+
 ## 4.7.2
 * fix: directly require factor-bundle. #61
 * internal: fix watch test not finishing
