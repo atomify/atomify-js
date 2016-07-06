@@ -34,7 +34,6 @@ ctor = module.exports = function atomifyJs (opts, cb) {
     , assets
     , outputs
     , b
-    , w
 
   if (Array.isArray(opts)) opts = {entries: opts}
   if (typeof opts === 'string') opts = {entries: [opts]}
@@ -104,20 +103,20 @@ ctor = module.exports = function atomifyJs (opts, cb) {
   emitter.emit('browserify', b)
 
   if (opts.watch) {
-    w = watchify(b)
-    emitter.emit('watchify', w)
+    b = watchify(b)
+    emitter.emit('watchify', b)
   }
 
   if (opts.watch) {
-    w.on('update', function onUpdate (ids) {
+    b.on('update', function onUpdate (ids) {
       ids.forEach(function eachId (id) {
         emitter.emit('changed', id)
       })
 
-      w.bundle(cb)
+      rebundle()
     })
 
-    w.on('time', function onTime (time) {
+    b.on('time', function onTime (time) {
       emitter.emit('bundle', time)
     })
   }
@@ -199,6 +198,9 @@ ctor = module.exports = function atomifyJs (opts, cb) {
     b.external(opts.external)
   }
 
+  return rebundle()
+
+  function rebundle() {
   // if we've got the common option, we want to use factor bundle
   if (opts.common === true){
     if (opts.entries.length < 2) {
@@ -250,6 +252,7 @@ ctor = module.exports = function atomifyJs (opts, cb) {
   }
   // if we don't need to use factor bundle, just browserify!
   else return b.bundle(cb)
+  }
 }
 
 ctor.emitter = emitter
